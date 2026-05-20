@@ -276,7 +276,30 @@ REST_FRAMEWORK = {
         "rest_framework.pagination.PageNumberPagination",
 
     "PAGE_SIZE": 10,
+
+    # =====================================================
+    # THROTTLING
+    # =====================================================
+
+    "DEFAULT_THROTTLE_CLASSES": (
+        # Anonymous users
+        "rest_framework.throttling.AnonRateThrottle",
+
+        # Authenticated users
+        "rest_framework.throttling.UserRateThrottle",
+    ),
+
+    "DEFAULT_THROTTLE_RATES": {
+        # Limits unauthenticated requests
+        "anon": "100/day",
+
+        # Limits authenticated user requests
+        "user": "1000/day",
+    },
+
 }
+
+
 
 
 # =========================================================
