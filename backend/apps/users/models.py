@@ -6,13 +6,19 @@ class User(AbstractUser):
     """
     Custom user model for the Secure Vote System.
 
-    Extends Django's AbstractUser to support
-    role-based access control and future extensibility.
+    Extends Django's AbstractUser to support:
+    - role-based access control
+    - verification workflows
+    - future scalability
     """
 
     class Role(models.TextChoices):
         ADMIN = "ADMIN", "Admin"
         VOTER = "VOTER", "Voter"
+
+    email = models.EmailField(
+        unique=True,
+    )
 
     role = models.CharField(
         max_length=20,
@@ -20,14 +26,25 @@ class User(AbstractUser):
         default=Role.VOTER,
     )
 
-    is_verified = models.BooleanField(default=False)
+    is_verified = models.BooleanField(
+        default=False,
+    )
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
 
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(
+        auto_now=True,
+    )
+
+    class Meta:
+        db_table = "users"
+
+        ordering = ["-created_at"]
 
     def __str__(self):
         """
-        Human-readable representation of the user.
+        Returns readable user representation.
         """
         return self.username
