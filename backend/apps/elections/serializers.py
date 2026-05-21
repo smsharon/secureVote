@@ -6,6 +6,9 @@ from apps.elections.models import (
     Candidate,
 )
 
+from apps.elections.validators import (
+    validate_election_dates,
+)
 
 class ElectionSerializer(serializers.ModelSerializer):
     """
@@ -38,13 +41,11 @@ class ElectionSerializer(serializers.ModelSerializer):
         start_date = attrs.get("start_date")
         end_date = attrs.get("end_date")
 
-        if start_date >= end_date:
-            raise serializers.ValidationError(
-                {
-                    "end_date":
-                    "End date must be after start date."
-                }
-            )
+        validate_election_dates(
+            start_date,
+            end_date,
+        )
+            
 
         return attrs
 

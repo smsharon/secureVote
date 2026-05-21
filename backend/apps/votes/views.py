@@ -21,7 +21,22 @@ from apps.votes.services import (
     ResultService,
 )
 
+from drf_spectacular.utils import (
+    extend_schema,
+)
 
+from apps.common.responses import (
+    success_response,
+)
+
+@extend_schema(
+    summary="Cast secure vote",
+
+    description=(
+        "Allows verified voters to cast "
+        "a vote securely."
+    ),
+)
 class VoteCreateView(
     generics.CreateAPIView
 ):
@@ -73,7 +88,10 @@ class ElectionResultsView(APIView):
             .get_election_results(election_id)
         )
 
-        return Response(results)
+        return success_response(
+            message="Election results retrieved successfully.",
+            data=results,
+        )
 
 class ElectionWinnersView(APIView):
     """

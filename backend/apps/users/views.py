@@ -21,7 +21,29 @@ from apps.users.permissions import (
     IsVerifiedUser,
 )
 
-class UserRegistrationView(generics.CreateAPIView):
+from drf_spectacular.utils import (
+    extend_schema,
+    OpenApiResponse,
+)
+
+@extend_schema(
+    summary="Register a new user",
+
+    description=(
+        "Creates a new voter account."
+    ),
+
+    responses={
+        201: UserSerializer,
+
+        400: OpenApiResponse(
+            description="Validation error."
+        ),
+    },
+)
+class UserRegistrationView(
+    generics.CreateAPIView
+):
     """
     API endpoint for user registration.
     """

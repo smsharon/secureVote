@@ -273,7 +273,7 @@ REST_FRAMEWORK = {
 
     # Global pagination configuration.
     "DEFAULT_PAGINATION_CLASS":
-        "rest_framework.pagination.PageNumberPagination",
+        "apps.common.pagination.StandardResultsPagination",
 
     "PAGE_SIZE": 10,
 
@@ -296,6 +296,9 @@ REST_FRAMEWORK = {
         # Limits authenticated user requests
         "user": "1000/day",
     },
+
+    "EXCEPTION_HANDLER":
+        "apps.common.exceptions.custom_exception_handler",  
 
 }
 
@@ -330,14 +333,49 @@ SIMPLE_JWT = {
 # =========================================================
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Secure Vote System API",
+    # =====================================================
+    # API METADATA
+    # =====================================================
 
-    "DESCRIPTION":
-        "Backend API for the Secure Vote System project.",
+    "TITLE": "Secure Vote API",
+
+    "DESCRIPTION": (
+        "Production-grade electronic voting "
+        "system API built with Django REST Framework."
+    ),
 
     "VERSION": "1.0.0",
 
     "SERVE_INCLUDE_SCHEMA": False,
+
+    # =====================================================
+    # SWAGGER UI SETTINGS
+    # =====================================================
+
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "persistAuthorization": True,
+    },
+
+    # =====================================================
+    # SECURITY DEFINITIONS
+    # =====================================================
+
+    "COMPONENT_SPLIT_REQUEST": True,
+
+    "SECURITY": [
+        {
+            "BearerAuth": [],
+        }
+    ],
+
+    "SECURITY_SCHEMES": {
+        "BearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+        }
+    },
 }
 
 
@@ -418,10 +456,14 @@ LOGGING = {
     "disable_existing_loggers": False,
 
     "formatters": {
-        "standard": {
+        "verbose": {
             "format":
-                "[{asctime}] {levelname} {name}: {message}",
-
+            (
+                "[{asctime}] "
+                "{levelname} "
+                "{module} "
+                "{message}"
+            ),
             "style": "{",
         },
     },
@@ -430,7 +472,7 @@ LOGGING = {
         "console": {
             "class": "logging.StreamHandler",
 
-            "formatter": "standard",
+            "formatter": "verbose",
         },
     },
 

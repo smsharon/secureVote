@@ -30,18 +30,18 @@ urlpatterns = [
 
     # Users app
     path(
-        "api/users/",
+        "api/v1/users/",
         include("apps.users.urls"),
     ),
 
 
     path(
-        "api/elections/",
+        "api/v1/elections/",
         include("apps.elections.urls"),
     ),
 
     path(
-        "api/votes/",
+        "api/v1/votes/",
         include("apps.votes.urls"),
     ),
 ]
