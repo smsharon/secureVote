@@ -8,6 +8,8 @@ from rest_framework_simplejwt.views import (
 from apps.users.views import (
     UserRegistrationView,
     CurrentUserView,
+    AdminDashboardView,
+    VerifiedVoterView,
 )
 
 urlpatterns = [
@@ -37,5 +39,17 @@ urlpatterns = [
         "me/",
         CurrentUserView.as_view(),
         name="current-user",
+    ),
+
+    path(
+    "admin-dashboard/",
+    AdminDashboardView.as_view(),
+    name="admin-dashboard",
+    ),
+
+    path(
+        "verified-voter/",
+        VerifiedVoterView.as_view(),
+        name="verified-voter",
     ),
 ]

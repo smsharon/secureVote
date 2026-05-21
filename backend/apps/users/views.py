@@ -9,6 +9,17 @@ from apps.users.serializers import (
     UserSerializer,
 )
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from apps.users.permissions import (
+    IsAdminUserRole,
+)
+
+from apps.users.permissions import (
+    IsVoterRole,
+    IsVerifiedUser,
+)
 
 class UserRegistrationView(generics.CreateAPIView):
     """
@@ -32,3 +43,44 @@ class CurrentUserView(generics.RetrieveAPIView):
         """
 
         return self.request.user    
+
+class AdminDashboardView(APIView):
+    """
+    Example admin-only endpoint.
+    """
+
+    permission_classes = [IsAdminUserRole]
+
+    def get(self, request):
+        """
+        Returns admin dashboard data.
+        """
+
+        return Response(
+            {
+                "message":
+                "Welcome to the admin dashboard."
+            }
+        )      
+
+class VerifiedVoterView(APIView):
+    """
+    Endpoint accessible only to verified voters.
+    """
+
+    permission_classes = [
+        IsVoterRole,
+        IsVerifiedUser,
+    ]
+
+    def get(self, request):
+        """
+        Returns verified voter response.
+        """
+
+        return Response(
+            {
+                "message":
+                "You are a verified voter."
+            }
+        )          
