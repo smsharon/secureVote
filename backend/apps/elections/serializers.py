@@ -1,0 +1,87 @@
+from rest_framework import serializers
+
+from apps.elections.models import (
+    Election,
+    Position,
+    Candidate,
+)
+
+
+class ElectionSerializer(serializers.ModelSerializer):
+    """
+    Serializer for election objects.
+    """
+
+    created_by = serializers.StringRelatedField(
+        read_only=True,
+    )
+
+    class Meta:
+        model = Election
+
+        fields = [
+            "id",
+            "title",
+            "description",
+            "start_date",
+            "end_date",
+            "status",
+            "created_by",
+            "created_at",
+        ]
+
+    def validate(self, attrs):
+        """
+        Validates election dates.
+        """
+
+        start_date = attrs.get("start_date")
+        end_date = attrs.get("end_date")
+
+        if start_date >= end_date:
+            raise serializers.ValidationError(
+                {
+                    "end_date":
+                    "End date must be after start date."
+                }
+            )
+
+        return attrs
+
+class PositionSerializer(serializers.ModelSerializer):
+    """
+    Serializer for election positions.
+    """
+
+    class Meta:
+        model = Position
+
+        fields = [
+            "id",
+            "election",
+            "title",
+            "description",
+            "max_votes",
+        ]        
+
+class CandidateSerializer(serializers.ModelSerializer):
+    """
+    Serializer for election candidates.
+    """
+
+    user = serializers.StringRelatedField(
+        read_only=True,
+    )
+
+    class Meta:
+        model = Candidate
+
+        fields = [
+            "id",
+            "election",
+            "position",
+            "user",
+            "manifesto",
+            "image",
+            "created_at",
+        ]        

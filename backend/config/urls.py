@@ -33,6 +33,12 @@ urlpatterns = [
         "api/users/",
         include("apps.users.urls"),
     ),
+
+
+    path(
+        "api/elections/",
+        include("apps.elections.urls"),
+    ),
 ]
 
 # Media file serving during development
