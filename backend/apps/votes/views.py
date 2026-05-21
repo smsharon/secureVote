@@ -14,6 +14,13 @@ from apps.users.permissions import (
     IsVerifiedUser,
 )
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from apps.votes.services import (
+    ResultService,
+)
+
 
 class VoteCreateView(
     generics.CreateAPIView
@@ -50,3 +57,56 @@ class UserVoteListView(
         ).filter(
             voter=self.request.user
         )    
+
+class ElectionResultsView(APIView):
+    """
+    Returns aggregated election results.
+    """
+
+    def get(self, request, election_id):
+        """
+        Returns election result statistics.
+        """
+
+        results = (
+            ResultService
+            .get_election_results(election_id)
+        )
+
+        return Response(results)
+
+class ElectionWinnersView(APIView):
+    """
+    Returns election winners per position.
+    """
+
+    def get(self, request, election_id):
+        """
+        Returns winners grouped by position.
+        """
+
+        winners = (
+            ResultService
+            .get_position_winners(election_id)
+        )
+
+        return Response(winners)                
+
+class ElectionStatisticsView(APIView):
+    """
+    Returns election analytics and statistics.
+    """
+
+    def get(self, request, election_id):
+        """
+        Returns election statistics.
+        """
+
+        statistics = (
+            ResultService
+            .get_election_statistics(
+                election_id
+            )
+        )
+
+        return Response(statistics)        

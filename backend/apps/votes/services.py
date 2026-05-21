@@ -1,6 +1,14 @@
 from django.db import transaction
 
 from apps.votes.models import Vote
+from django.db.models import Count
+
+from apps.elections.models import (
+    Candidate,
+    Election,
+)
+
+from apps.votes.models import Vote
 
 class VoteService:
     """
@@ -21,3 +29,112 @@ class VoteService:
             voter=voter,
             **validated_data,
         )
+
+class ResultService:
+    """
+    Service layer responsible for
+    election result computations.
+    """
+
+    @staticmethod
+    def get_election_results(election_id):
+        """
+        Returns aggregated results for election.
+        """
+
+        queryset = (
+            Candidate.objects
+            .filter(election_id=election_id)
+            .select_related(
+                "user",
+                "position",
+            )
+            .annotate(
+                total_votes=Count("votes")
+            )
+            .order_by(
+                "position__title",
+                "-total_votes",
+            )
+        )
+
+        results = []
+
+        for candidate in queryset:
+            results.append(
+                {
+                    "candidate_id": candidate.id,
+
+                    "candidate_name":
+                    candidate.user.username,
+
+                    "position":
+                    candidate.position.title,
+
+                    "total_votes":
+                    candidate.total_votes,
+                }
+            )
+
+        return results
+
+    @staticmethod
+    def get_position_winners(election_id):
+        """
+        Determines winners per position.
+        """
+
+        election = Election.objects.prefetch_related(
+            "positions"
+        ).get(id=election_id)
+
+        winners = []
+
+        for position in election.positions.all():
+
+            winner = (
+                Candidate.objects
+                .filter(
+                    election_id=election_id,
+                    position=position,
+                )
+                .annotate(
+                    total_votes=Count("votes")
+                )
+                .order_by("-total_votes")
+                .first()
+            )
+
+            if winner:
+                winners.append(
+                    {
+                        "position": position.title,
+
+                        "winner":
+                        winner.user.username,
+
+                        "total_votes":
+                        winner.total_votes,
+                    }
+                )
+
+        return winners   
+                 
+    @staticmethod
+    def get_election_statistics(election_id):
+        """
+        Returns high-level election analytics.
+        """
+
+        total_votes = Vote.objects.filter(
+            election_id=election_id
+        ).count()
+
+        total_candidates = Candidate.objects.filter(
+            election_id=election_id
+        ).count()
+
+        return {
+            "total_votes": total_votes,
+            "total_candidates": total_candidates,
+        }    

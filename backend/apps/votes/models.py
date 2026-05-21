@@ -40,7 +40,21 @@ class Vote(models.Model):
 
         ordering = ["-created_at"]
 
-        # Prevent duplicate voting for same position
+        indexes = [
+            models.Index(
+                fields=[
+                    "election",
+                    "position",
+                ]
+            ),
+
+            models.Index(
+                fields=[
+                    "candidate",
+                ]
+            ),
+        ]
+
         constraints = [
             models.UniqueConstraint(
                 fields=[
@@ -51,7 +65,6 @@ class Vote(models.Model):
                 name="unique_vote_per_position",
             )
         ]
-
     def __str__(self):
         """
         Human-readable vote representation.

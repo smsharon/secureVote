@@ -124,3 +124,16 @@ class VoteSerializer(serializers.ModelSerializer):
             validated_data=validated_data,
             voter=request.user,
         )   
+
+class CandidateResultSerializer(serializers.Serializer):
+    """
+    Serializer for aggregated candidate results.
+    """
+
+    candidate_id = serializers.IntegerField()
+
+    candidate_name = serializers.CharField()
+
+    position = serializers.CharField()
+
+    total_votes = serializers.IntegerField()        
