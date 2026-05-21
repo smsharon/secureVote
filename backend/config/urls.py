@@ -39,6 +39,11 @@ urlpatterns = [
         "api/elections/",
         include("apps.elections.urls"),
     ),
+
+    path(
+        "api/votes/",
+        include("apps.votes.urls"),
+    ),
 ]
 
 # Media file serving during development
