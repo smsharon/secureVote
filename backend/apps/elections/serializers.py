@@ -10,6 +10,7 @@ from apps.elections.validators import (
     validate_election_dates,
 )
 
+
 class ElectionSerializer(serializers.ModelSerializer):
     """
     Serializer for election objects.
@@ -45,9 +46,9 @@ class ElectionSerializer(serializers.ModelSerializer):
             start_date,
             end_date,
         )
-            
 
         return attrs
+
 
 class PositionSerializer(serializers.ModelSerializer):
     """
@@ -63,7 +64,8 @@ class PositionSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "max_votes",
-        ]        
+        ]
+
 
 class CandidateSerializer(serializers.ModelSerializer):
     """
@@ -85,4 +87,4 @@ class CandidateSerializer(serializers.ModelSerializer):
             "manifesto",
             "image",
             "created_at",
-        ]        
+        ]

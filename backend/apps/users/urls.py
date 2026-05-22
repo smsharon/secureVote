@@ -19,34 +19,29 @@ urlpatterns = [
         UserRegistrationView.as_view(),
         name="user-register",
     ),
-
     # Login
     path(
         "login/",
         TokenObtainPairView.as_view(),
         name="token-obtain-pair",
     ),
-
     # Refresh token
     path(
         "token/refresh/",
         TokenRefreshView.as_view(),
         name="token-refresh",
     ),
-
     # Current authenticated user
     path(
         "me/",
         CurrentUserView.as_view(),
         name="current-user",
     ),
-
     path(
-    "admin-dashboard/",
-    AdminDashboardView.as_view(),
-    name="admin-dashboard",
+        "admin-dashboard/",
+        AdminDashboardView.as_view(),
+        name="admin-dashboard",
     ),
-
     path(
         "verified-voter/",
         VerifiedVoterView.as_view(),

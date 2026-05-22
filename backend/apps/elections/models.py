@@ -1,7 +1,7 @@
-
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
+
 
 class Election(models.Model):
     """
@@ -63,9 +63,8 @@ class Election(models.Model):
 
         now = timezone.now()
 
-        return (
-            self.start_date <= now <= self.end_date
-        )
+        return self.start_date <= now <= self.end_date
+
 
 class Position(models.Model):
     """
@@ -110,6 +109,7 @@ class Position(models.Model):
         """
 
         return f"{self.title} - {self.election.title}"
+
 
 class Candidate(models.Model):
     """
@@ -161,7 +161,4 @@ class Candidate(models.Model):
         Human-readable candidate representation.
         """
 
-        return (
-            f"{self.user.username} "
-            f"- {self.position.title}"
-        )                
+        return f"{self.user.username} " f"- {self.position.title}"

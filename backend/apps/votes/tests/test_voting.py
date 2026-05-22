@@ -34,9 +34,7 @@ def test_duplicate_vote_prevention():
 
     election = ElectionFactory()
 
-    position = PositionFactory(
-        election=election
-    )
+    position = PositionFactory(election=election)
 
     candidate = CandidateFactory(
         election=election,

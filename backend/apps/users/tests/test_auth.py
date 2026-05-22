@@ -21,8 +21,7 @@ def test_user_registration():
         "username": "testuser",
         "email": "test@example.com",
         "password": "StrongPass123!",
-        "password_confirm":
-        "StrongPass123!",
+        "password_confirm": "StrongPass123!",
     }
 
     response = client.post(
@@ -32,9 +31,8 @@ def test_user_registration():
 
     assert response.status_code == 201
 
-    assert User.objects.filter(
-        email="test@example.com"
-    ).exists()
+    assert User.objects.filter(email="test@example.com").exists()
+
 
 @pytest.mark.django_db
 def test_user_login():
@@ -62,4 +60,4 @@ def test_user_login():
 
     assert response.status_code == 200
 
-    assert "access" in response.data    
+    assert "access" in response.data

@@ -13,33 +13,27 @@ from drf_spectacular.views import (
 urlpatterns = [
     # Django admin
     path("admin/", admin.site.urls),
-
     # API schema
     path(
         "api/schema/",
         SpectacularAPIView.as_view(),
         name="schema",
     ),
-
     # Swagger UI
     path(
         "api/docs/",
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
     ),
-
     # Users app
     path(
         "api/v1/users/",
         include("apps.users.urls"),
     ),
-
-
     path(
         "api/v1/elections/",
         include("apps.elections.urls"),
     ),
-
     path(
         "api/v1/votes/",
         include("apps.votes.urls"),

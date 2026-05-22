@@ -48,7 +48,7 @@ class User(AbstractUser):
         Returns readable user representation.
         """
         return self.username
-        
+
     @property
     def is_admin(self):
         """
@@ -56,7 +56,6 @@ class User(AbstractUser):
         """
 
         return self.role == self.Role.ADMIN
-
 
     @property
     def is_voter(self):

@@ -29,17 +29,12 @@ from apps.common.responses import (
     success_response,
 )
 
+
 @extend_schema(
     summary="Cast secure vote",
-
-    description=(
-        "Allows verified voters to cast "
-        "a vote securely."
-    ),
+    description=("Allows verified voters to cast " "a vote securely."),
 )
-class VoteCreateView(
-    generics.CreateAPIView
-):
+class VoteCreateView(generics.CreateAPIView):
     """
     Secure endpoint for casting votes.
     """
@@ -51,9 +46,8 @@ class VoteCreateView(
         IsVerifiedUser,
     ]
 
-class UserVoteListView(
-    generics.ListAPIView
-):
+
+class UserVoteListView(generics.ListAPIView):
     """
     Returns authenticated user's voting history.
     """
@@ -69,9 +63,8 @@ class UserVoteListView(
             "candidate",
             "position",
             "election",
-        ).filter(
-            voter=self.request.user
-        )    
+        ).filter(voter=self.request.user)
+
 
 class ElectionResultsView(APIView):
     """
@@ -83,15 +76,13 @@ class ElectionResultsView(APIView):
         Returns election result statistics.
         """
 
-        results = (
-            ResultService
-            .get_election_results(election_id)
-        )
+        results = ResultService.get_election_results(election_id)
 
         return success_response(
             message="Election results retrieved successfully.",
             data=results,
         )
+
 
 class ElectionWinnersView(APIView):
     """
@@ -103,12 +94,10 @@ class ElectionWinnersView(APIView):
         Returns winners grouped by position.
         """
 
-        winners = (
-            ResultService
-            .get_position_winners(election_id)
-        )
+        winners = ResultService.get_position_winners(election_id)
 
-        return Response(winners)                
+        return Response(winners)
+
 
 class ElectionStatisticsView(APIView):
     """
@@ -120,11 +109,6 @@ class ElectionStatisticsView(APIView):
         Returns election statistics.
         """
 
-        statistics = (
-            ResultService
-            .get_election_statistics(
-                election_id
-            )
-        )
+        statistics = ResultService.get_election_statistics(election_id)
 
-        return Response(statistics)        
+        return Response(statistics)

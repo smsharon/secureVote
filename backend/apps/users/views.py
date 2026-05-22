@@ -26,24 +26,16 @@ from drf_spectacular.utils import (
     OpenApiResponse,
 )
 
+
 @extend_schema(
     summary="Register a new user",
-
-    description=(
-        "Creates a new voter account."
-    ),
-
+    description=("Creates a new voter account."),
     responses={
         201: UserSerializer,
-
-        400: OpenApiResponse(
-            description="Validation error."
-        ),
+        400: OpenApiResponse(description="Validation error."),
     },
 )
-class UserRegistrationView(
-    generics.CreateAPIView
-):
+class UserRegistrationView(generics.CreateAPIView):
     """
     API endpoint for user registration.
     """
@@ -51,6 +43,7 @@ class UserRegistrationView(
     serializer_class = UserRegistrationSerializer
 
     permission_classes = [AllowAny]
+
 
 class CurrentUserView(generics.RetrieveAPIView):
     """
@@ -64,7 +57,8 @@ class CurrentUserView(generics.RetrieveAPIView):
         Returns current authenticated user.
         """
 
-        return self.request.user    
+        return self.request.user
+
 
 class AdminDashboardView(APIView):
     """
@@ -78,12 +72,8 @@ class AdminDashboardView(APIView):
         Returns admin dashboard data.
         """
 
-        return Response(
-            {
-                "message":
-                "Welcome to the admin dashboard."
-            }
-        )      
+        return Response({"message": "Welcome to the admin dashboard."})
+
 
 class VerifiedVoterView(APIView):
     """
@@ -100,9 +90,4 @@ class VerifiedVoterView(APIView):
         Returns verified voter response.
         """
 
-        return Response(
-            {
-                "message":
-                "You are a verified voter."
-            }
-        )          
+        return Response({"message": "You are a verified voter."})

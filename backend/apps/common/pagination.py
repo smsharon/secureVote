@@ -3,9 +3,7 @@ from rest_framework.pagination import (
 )
 
 
-class StandardResultsPagination(
-    PageNumberPagination
-):
+class StandardResultsPagination(PageNumberPagination):
     """
     Standard pagination configuration.
     """

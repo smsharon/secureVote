@@ -27,9 +27,7 @@ def test_result_aggregation():
 
     election = ElectionFactory()
 
-    position = PositionFactory(
-        election=election
-    )
+    position = PositionFactory(election=election)
 
     candidate = CandidateFactory(
         election=election,
@@ -47,11 +45,6 @@ def test_result_aggregation():
             candidate=candidate,
         )
 
-    results = (
-        ResultService
-        .get_election_results(
-            election.id
-        )
-    )
+    results = ResultService.get_election_results(election.id)
 
     assert results[0]["total_votes"] == 5

@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 
+
 class Vote(models.Model):
     """
     Represents a secure vote cast by a voter
@@ -47,7 +48,6 @@ class Vote(models.Model):
                     "position",
                 ]
             ),
-
             models.Index(
                 fields=[
                     "candidate",
@@ -65,6 +65,7 @@ class Vote(models.Model):
                 name="unique_vote_per_position",
             )
         ]
+
     def __str__(self):
         """
         Human-readable vote representation.

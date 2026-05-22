@@ -1,4 +1,3 @@
-
 from django.contrib import admin
 
 from apps.elections.models import (
@@ -22,13 +21,9 @@ class ElectionAdmin(admin.ModelAdmin):
         "end_date",
     )
 
-    search_fields = (
-        "title",
-    )
+    search_fields = ("title",)
 
-    list_filter = (
-        "status",
-    )
+    list_filter = ("status",)
 
 
 @admin.register(Position)

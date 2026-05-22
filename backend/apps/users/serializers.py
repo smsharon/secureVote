@@ -56,10 +56,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
         if password != password_confirm:
             raise serializers.ValidationError(
-                {
-                    "password_confirm":
-                    "Passwords do not match."
-                }
+                {"password_confirm": "Passwords do not match."}
             )
 
         validate_password(password)
@@ -73,7 +70,9 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
         return UserService.create_user(validated_data)
 
+
 # USER PROFILE SERIALIZER
+
 
 class UserSerializer(serializers.ModelSerializer):
     """
@@ -90,4 +89,4 @@ class UserSerializer(serializers.ModelSerializer):
             "role",
             "is_verified",
             "created_at",
-        ]        
+        ]

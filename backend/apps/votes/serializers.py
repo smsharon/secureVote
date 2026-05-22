@@ -9,6 +9,7 @@ from apps.elections.models import (
     Candidate,
 )
 
+
 class VoteSerializer(serializers.ModelSerializer):
     """
     Serializer responsible for validating
@@ -50,10 +51,7 @@ class VoteSerializer(serializers.ModelSerializer):
 
         if not election.is_active:
             raise serializers.ValidationError(
-                {
-                    "election":
-                    "This election is not active."
-                }
+                {"election": "This election is not active."}
             )
 
         # =================================================
@@ -62,10 +60,7 @@ class VoteSerializer(serializers.ModelSerializer):
 
         if position.election_id != election.id:
             raise serializers.ValidationError(
-                {
-                    "position":
-                    "Position does not belong to this election."
-                }
+                {"position": "Position does not belong to this election."}
             )
 
         # =================================================
@@ -74,10 +69,7 @@ class VoteSerializer(serializers.ModelSerializer):
 
         if candidate.position_id != position.id:
             raise serializers.ValidationError(
-                {
-                    "candidate":
-                    "Candidate does not belong to this position."
-                }
+                {"candidate": "Candidate does not belong to this position."}
             )
 
         # =================================================
@@ -86,10 +78,7 @@ class VoteSerializer(serializers.ModelSerializer):
 
         if candidate.election_id != election.id:
             raise serializers.ValidationError(
-                {
-                    "candidate":
-                    "Candidate does not belong to this election."
-                }
+                {"candidate": "Candidate does not belong to this election."}
             )
 
         # =================================================
@@ -104,14 +93,10 @@ class VoteSerializer(serializers.ModelSerializer):
 
         if already_voted:
             raise serializers.ValidationError(
-                {
-                    "vote":
-                    "You have already voted for this position."
-                }
+                {"vote": "You have already voted for this position."}
             )
 
         return attrs
-
 
     def create(self, validated_data):
         """
@@ -123,7 +108,8 @@ class VoteSerializer(serializers.ModelSerializer):
         return VoteService.cast_vote(
             validated_data=validated_data,
             voter=request.user,
-        )   
+        )
+
 
 class CandidateResultSerializer(serializers.Serializer):
     """
@@ -136,4 +122,4 @@ class CandidateResultSerializer(serializers.Serializer):
 
     position = serializers.CharField()
 
-    total_votes = serializers.IntegerField()        
+    total_votes = serializers.IntegerField()

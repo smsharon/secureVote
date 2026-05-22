@@ -18,7 +18,6 @@ from datetime import timedelta
 
 from decouple import config
 
-
 # =========================================================
 # CORE PROJECT PATHS
 # =========================================================
@@ -65,16 +64,12 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     # Django REST Framework
     "rest_framework",
-
     # JWT Authentication
     "rest_framework_simplejwt",
-
     # OpenAPI/Swagger documentation
     "drf_spectacular",
-
     # Filtering support
     "django_filters",
-
     # Cross-Origin Resource Sharing
     "corsheaders",
 ]
@@ -88,11 +83,7 @@ LOCAL_APPS = [
 ]
 
 # Combined installed applications.
-INSTALLED_APPS = (
-    DJANGO_APPS
-    + THIRD_PARTY_APPS
-    + LOCAL_APPS
-)
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 
 # =========================================================
@@ -102,25 +93,18 @@ INSTALLED_APPS = (
 MIDDLEWARE = [
     # Handles Cross-Origin requests.
     "corsheaders.middleware.CorsMiddleware",
-
     # Adds security-related protections.
     "django.middleware.security.SecurityMiddleware",
-
     # Manages sessions across requests.
     "django.contrib.sessions.middleware.SessionMiddleware",
-
     # Handles common HTTP functionality.
     "django.middleware.common.CommonMiddleware",
-
     # Protects against Cross-Site Request Forgery attacks.
     "django.middleware.csrf.CsrfViewMiddleware",
-
     # Associates authenticated users with requests.
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-
     # Enables Django messaging framework.
     "django.contrib.messages.middleware.MessageMiddleware",
-
     # Protects against clickjacking attacks.
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -139,23 +123,16 @@ ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
     {
-        "BACKEND":
-            "django.template.backends.django.DjangoTemplates",
-
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
         # Global template directories.
         "DIRS": [],
-
         # Enables template discovery inside installed apps.
         "APP_DIRS": True,
-
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
-
                 "django.template.context_processors.request",
-
                 "django.contrib.auth.context_processors.auth",
-
                 "django.contrib.messages.context_processors.messages",
             ],
         },
@@ -190,15 +167,10 @@ ASGI_APPLICATION = "config.asgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-
         "NAME": config("DB_NAME"),
-
         "USER": config("DB_USER"),
-
         "PASSWORD": config("DB_PASSWORD"),
-
         "HOST": config("DB_HOST"),
-
         "PORT": config("DB_PORT"),
     }
 }
@@ -221,23 +193,16 @@ AUTH_USER_MODEL = "users.User"
 # Built-in validators improve password security.
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME":
-            "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
-
     {
-        "NAME":
-            "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
-
     {
-        "NAME":
-            "django.contrib.auth.password_validation.CommonPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
-
     {
-        "NAME":
-            "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -251,58 +216,39 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-
     # Secure-by-default permissions.
     # Endpoints are protected unless explicitly made public.
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
     ),
-
     # OpenAPI schema generation.
-    "DEFAULT_SCHEMA_CLASS":
-        "drf_spectacular.openapi.AutoSchema",
-
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     # Enables filtering, searching, and ordering support.
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
-
         "rest_framework.filters.SearchFilter",
-
         "rest_framework.filters.OrderingFilter",
     ),
-
     # Global pagination configuration.
-    "DEFAULT_PAGINATION_CLASS":
-        "apps.common.pagination.StandardResultsPagination",
-
+    "DEFAULT_PAGINATION_CLASS": "apps.common.pagination.StandardResultsPagination",
     "PAGE_SIZE": 10,
-
     # =====================================================
     # THROTTLING
     # =====================================================
-
     "DEFAULT_THROTTLE_CLASSES": (
         # Anonymous users
         "rest_framework.throttling.AnonRateThrottle",
-
         # Authenticated users
         "rest_framework.throttling.UserRateThrottle",
     ),
-
     "DEFAULT_THROTTLE_RATES": {
         # Limits unauthenticated requests
         "anon": "100/day",
-
         # Limits authenticated user requests
         "user": "1000/day",
     },
-
-    "EXCEPTION_HANDLER":
-        "apps.common.exceptions.custom_exception_handler",  
-
+    "EXCEPTION_HANDLER": "apps.common.exceptions.custom_exception_handler",
 }
-
-
 
 
 # =========================================================
@@ -312,16 +258,12 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     # Short-lived access tokens improve security.
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-
     # Refresh tokens allow token renewal.
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-
     # Rotating refresh tokens reduces replay attack risks.
     "ROTATE_REFRESH_TOKENS": True,
-
     # Invalidates old refresh tokens after rotation.
     "BLACKLIST_AFTER_ROTATION": True,
-
     # Authorization header format:
     # Authorization: Bearer <token>
     "AUTH_HEADER_TYPES": ("Bearer",),
@@ -336,39 +278,29 @@ SPECTACULAR_SETTINGS = {
     # =====================================================
     # API METADATA
     # =====================================================
-
     "TITLE": "Secure Vote API",
-
     "DESCRIPTION": (
         "Production-grade electronic voting "
         "system API built with Django REST Framework."
     ),
-
     "VERSION": "1.0.0",
-
     "SERVE_INCLUDE_SCHEMA": False,
-
     # =====================================================
     # SWAGGER UI SETTINGS
     # =====================================================
-
     "SWAGGER_UI_SETTINGS": {
         "deepLinking": True,
         "persistAuthorization": True,
     },
-
     # =====================================================
     # SECURITY DEFINITIONS
     # =====================================================
-
     "COMPONENT_SPLIT_REQUEST": True,
-
     "SECURITY": [
         {
             "BearerAuth": [],
         }
     ],
-
     "SECURITY_SCHEMES": {
         "BearerAuth": {
             "type": "http",
@@ -452,33 +384,21 @@ INTERNAL_IPS = [
 # - Security auditing
 LOGGING = {
     "version": 1,
-
     "disable_existing_loggers": False,
-
     "formatters": {
         "verbose": {
-            "format":
-            (
-                "[{asctime}] "
-                "{levelname} "
-                "{module} "
-                "{message}"
-            ),
+            "format": ("[{asctime}] " "{levelname} " "{module} " "{message}"),
             "style": "{",
         },
     },
-
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
-
             "formatter": "verbose",
         },
     },
-
     "root": {
         "handlers": ["console"],
-
         "level": "INFO",
     },
 }

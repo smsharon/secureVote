@@ -19,19 +19,15 @@ def test_voter_cannot_create_election():
 
     base = AuthenticatedAPITestCase()
 
-    voter = UserFactory(
-        role="VOTER"
-    )
+    voter = UserFactory(role="VOTER")
 
     base.authenticate(voter)
 
     payload = {
         "title": "Election",
         "description": "Test",
-        "start_date":
-        "2026-01-01T08:00:00Z",
-        "end_date":
-        "2026-01-02T18:00:00Z",
+        "start_date": "2026-01-01T08:00:00Z",
+        "end_date": "2026-01-02T18:00:00Z",
         "status": "ONGOING",
     }
 

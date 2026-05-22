@@ -10,6 +10,7 @@ from apps.elections.models import (
 
 from apps.votes.models import Vote
 
+
 class VoteService:
     """
     Service layer responsible for secure vote casting.
@@ -30,6 +31,7 @@ class VoteService:
             **validated_data,
         )
 
+
 class ResultService:
     """
     Service layer responsible for
@@ -43,15 +45,12 @@ class ResultService:
         """
 
         queryset = (
-            Candidate.objects
-            .filter(election_id=election_id)
+            Candidate.objects.filter(election_id=election_id)
             .select_related(
                 "user",
                 "position",
             )
-            .annotate(
-                total_votes=Count("votes")
-            )
+            .annotate(total_votes=Count("votes"))
             .order_by(
                 "position__title",
                 "-total_votes",
@@ -64,15 +63,9 @@ class ResultService:
             results.append(
                 {
                     "candidate_id": candidate.id,
-
-                    "candidate_name":
-                    candidate.user.username,
-
-                    "position":
-                    candidate.position.title,
-
-                    "total_votes":
-                    candidate.total_votes,
+                    "candidate_name": candidate.user.username,
+                    "position": candidate.position.title,
+                    "total_votes": candidate.total_votes,
                 }
             )
 
@@ -84,23 +77,20 @@ class ResultService:
         Determines winners per position.
         """
 
-        election = Election.objects.prefetch_related(
-            "positions"
-        ).get(id=election_id)
+        election = Election.objects.prefetch_related("positions").get(
+            id=election_id
+        )
 
         winners = []
 
         for position in election.positions.all():
 
             winner = (
-                Candidate.objects
-                .filter(
+                Candidate.objects.filter(
                     election_id=election_id,
                     position=position,
                 )
-                .annotate(
-                    total_votes=Count("votes")
-                )
+                .annotate(total_votes=Count("votes"))
                 .order_by("-total_votes")
                 .first()
             )
@@ -109,26 +99,20 @@ class ResultService:
                 winners.append(
                     {
                         "position": position.title,
-
-                        "winner":
-                        winner.user.username,
-
-                        "total_votes":
-                        winner.total_votes,
+                        "winner": winner.user.username,
+                        "total_votes": winner.total_votes,
                     }
                 )
 
-        return winners   
-                 
+        return winners
+
     @staticmethod
     def get_election_statistics(election_id):
         """
         Returns high-level election analytics.
         """
 
-        total_votes = Vote.objects.filter(
-            election_id=election_id
-        ).count()
+        total_votes = Vote.objects.filter(election_id=election_id).count()
 
         total_candidates = Candidate.objects.filter(
             election_id=election_id
@@ -137,4 +121,4 @@ class ResultService:
         return {
             "total_votes": total_votes,
             "total_candidates": total_candidates,
-        }    
+        }

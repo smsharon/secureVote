@@ -12,13 +12,11 @@ urlpatterns = [
         ElectionListCreateView.as_view(),
         name="election-list-create",
     ),
-
     path(
         "positions/",
         PositionListCreateView.as_view(),
         name="position-list-create",
     ),
-
     path(
         "candidates/",
         CandidateListCreateView.as_view(),

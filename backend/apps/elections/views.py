@@ -19,16 +19,13 @@ from apps.users.permissions import (
     IsAdminUserRole,
 )
 
-class ElectionListCreateView(
-    generics.ListCreateAPIView
-):
+
+class ElectionListCreateView(generics.ListCreateAPIView):
     """
     Handles election listing and creation.
     """
 
-    queryset = Election.objects.select_related(
-        "created_by"
-    )
+    queryset = Election.objects.select_related("created_by")
 
     serializer_class = ElectionSerializer
 
@@ -47,28 +44,22 @@ class ElectionListCreateView(
         Assigns creator automatically.
         """
 
-        serializer.save(
-            created_by=self.request.user
-        )
+        serializer.save(created_by=self.request.user)
 
-class PositionListCreateView(
-    generics.ListCreateAPIView
-):
+
+class PositionListCreateView(generics.ListCreateAPIView):
     """
     Handles position listing and creation.
     """
 
-    queryset = Position.objects.select_related(
-        "election"
-    )
+    queryset = Position.objects.select_related("election")
 
     serializer_class = PositionSerializer
 
     permission_classes = [IsAdminUserRole]
 
-class CandidateListCreateView(
-    generics.ListCreateAPIView
-):
+
+class CandidateListCreateView(generics.ListCreateAPIView):
     """
     Handles candidate listing and creation.
     """
@@ -81,5 +72,4 @@ class CandidateListCreateView(
 
     serializer_class = CandidateSerializer
 
-    permission_classes = [IsAdminUserRole]            
-
+    permission_classes = [IsAdminUserRole]

@@ -21,8 +21,4 @@ class AuthenticatedAPITestCase:
 
         access_token = str(refresh.access_token)
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION=(
-                f"Bearer {access_token}"
-            )
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=(f"Bearer {access_token}"))

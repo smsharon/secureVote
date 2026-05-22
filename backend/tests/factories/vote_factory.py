@@ -13,9 +13,7 @@ from tests.factories.election_factory import (
 )
 
 
-class VoteFactory(
-    factory.django.DjangoModelFactory
-):
+class VoteFactory(factory.django.DjangoModelFactory):
     """
     Factory for votes.
     """
@@ -23,18 +21,10 @@ class VoteFactory(
     class Meta:
         model = Vote
 
-    voter = factory.SubFactory(
-        UserFactory
-    )
+    voter = factory.SubFactory(UserFactory)
 
-    election = factory.SubFactory(
-        ElectionFactory
-    )
+    election = factory.SubFactory(ElectionFactory)
 
-    position = factory.SubFactory(
-        PositionFactory
-    )
+    position = factory.SubFactory(PositionFactory)
 
-    candidate = factory.SubFactory(
-        CandidateFactory
-    )
+    candidate = factory.SubFactory(CandidateFactory)

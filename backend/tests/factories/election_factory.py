@@ -14,9 +14,7 @@ from tests.factories.user_factory import (
 )
 
 
-class ElectionFactory(
-    factory.django.DjangoModelFactory
-):
+class ElectionFactory(factory.django.DjangoModelFactory):
     """
     Factory for election instances.
     """
@@ -24,9 +22,7 @@ class ElectionFactory(
     class Meta:
         model = Election
 
-    title = factory.Sequence(
-        lambda n: f"Election {n}"
-    )
+    title = factory.Sequence(lambda n: f"Election {n}")
 
     description = "Test election"
 
@@ -42,9 +38,7 @@ class ElectionFactory(
     )
 
 
-class PositionFactory(
-    factory.django.DjangoModelFactory
-):
+class PositionFactory(factory.django.DjangoModelFactory):
     """
     Factory for positions.
     """
@@ -52,20 +46,14 @@ class PositionFactory(
     class Meta:
         model = Position
 
-    election = factory.SubFactory(
-        ElectionFactory
-    )
+    election = factory.SubFactory(ElectionFactory)
 
-    title = factory.Sequence(
-        lambda n: f"Position {n}"
-    )
+    title = factory.Sequence(lambda n: f"Position {n}")
 
     max_votes = 1
 
 
-class CandidateFactory(
-    factory.django.DjangoModelFactory
-):
+class CandidateFactory(factory.django.DjangoModelFactory):
     """
     Factory for candidates.
     """
@@ -73,16 +61,10 @@ class CandidateFactory(
     class Meta:
         model = Candidate
 
-    election = factory.SubFactory(
-        ElectionFactory
-    )
+    election = factory.SubFactory(ElectionFactory)
 
-    position = factory.SubFactory(
-        PositionFactory
-    )
+    position = factory.SubFactory(PositionFactory)
 
-    user = factory.SubFactory(
-        UserFactory
-    )
+    user = factory.SubFactory(UserFactory)
 
     manifesto = "Test manifesto"
