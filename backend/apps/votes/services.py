@@ -1,13 +1,7 @@
 from django.db import transaction
-
-from apps.votes.models import Vote
 from django.db.models import Count
 
-from apps.elections.models import (
-    Candidate,
-    Election,
-)
-
+from apps.elections.models import Candidate, Election
 from apps.votes.models import Vote
 
 

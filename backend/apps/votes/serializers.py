@@ -3,12 +3,6 @@ from rest_framework import serializers
 from apps.votes.models import Vote
 from apps.votes.services import VoteService
 
-from apps.elections.models import (
-    Election,
-    Position,
-    Candidate,
-)
-
 
 class VoteSerializer(serializers.ModelSerializer):
     """

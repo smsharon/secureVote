@@ -1,33 +1,15 @@
-from django.shortcuts import render
+from drf_spectacular.utils import extend_schema
 
 # Create your views here.
 from rest_framework import generics
-
-from apps.votes.models import Vote
-
-from apps.votes.serializers import (
-    VoteSerializer,
-)
-
-from apps.users.permissions import (
-    IsVoterRole,
-    IsVerifiedUser,
-)
-
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from apps.votes.services import (
-    ResultService,
-)
-
-from drf_spectacular.utils import (
-    extend_schema,
-)
-
-from apps.common.responses import (
-    success_response,
-)
+from apps.common.responses import success_response
+from apps.users.permissions import IsVerifiedUser, IsVoterRole
+from apps.votes.models import Vote
+from apps.votes.serializers import VoteSerializer
+from apps.votes.services import ResultService
 
 
 @extend_schema(

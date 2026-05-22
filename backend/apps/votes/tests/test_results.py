@@ -1,22 +1,13 @@
 import pytest
 
-from apps.votes.services import (
-    ResultService,
-)
-
+from apps.votes.services import ResultService
 from tests.factories.election_factory import (
+    CandidateFactory,
     ElectionFactory,
     PositionFactory,
-    CandidateFactory,
 )
-
-from tests.factories.vote_factory import (
-    VoteFactory,
-)
-
-from tests.factories.user_factory import (
-    UserFactory,
-)
+from tests.factories.user_factory import UserFactory
+from tests.factories.vote_factory import VoteFactory
 
 
 @pytest.mark.django_db

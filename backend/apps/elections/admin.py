@@ -1,10 +1,6 @@
 from django.contrib import admin
 
-from apps.elections.models import (
-    Election,
-    Position,
-    Candidate,
-)
+from apps.elections.models import Candidate, Election, Position
 
 
 @admin.register(Election)

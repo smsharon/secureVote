@@ -1,14 +1,7 @@
 from rest_framework import serializers
 
-from apps.elections.models import (
-    Election,
-    Position,
-    Candidate,
-)
-
-from apps.elections.validators import (
-    validate_election_dates,
-)
+from apps.elections.models import Candidate, Election, Position
+from apps.elections.validators import validate_election_dates
 
 
 class ElectionSerializer(serializers.ModelSerializer):

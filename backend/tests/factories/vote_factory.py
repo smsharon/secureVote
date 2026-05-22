@@ -1,16 +1,12 @@
 import factory
 
 from apps.votes.models import Vote
-
-from tests.factories.user_factory import (
-    UserFactory,
-)
-
 from tests.factories.election_factory import (
+    CandidateFactory,
     ElectionFactory,
     PositionFactory,
-    CandidateFactory,
 )
+from tests.factories.user_factory import UserFactory
 
 
 class VoteFactory(factory.django.DjangoModelFactory):

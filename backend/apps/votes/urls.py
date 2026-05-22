@@ -1,11 +1,11 @@
 from django.urls import path
 
 from apps.votes.views import (
-    VoteCreateView,
-    UserVoteListView,
     ElectionResultsView,
-    ElectionWinnersView,
     ElectionStatisticsView,
+    ElectionWinnersView,
+    UserVoteListView,
+    VoteCreateView,
 )
 
 urlpatterns = [

@@ -1,23 +1,13 @@
-from django.shortcuts import render
-
 # Create your views here.
 from rest_framework import generics
 
-from apps.elections.models import (
-    Election,
-    Position,
-    Candidate,
-)
-
+from apps.elections.models import Candidate, Election, Position
 from apps.elections.serializers import (
+    CandidateSerializer,
     ElectionSerializer,
     PositionSerializer,
-    CandidateSerializer,
 )
-
-from apps.users.permissions import (
-    IsAdminUserRole,
-)
+from apps.users.permissions import IsAdminUserRole
 
 
 class ElectionListCreateView(generics.ListCreateAPIView):

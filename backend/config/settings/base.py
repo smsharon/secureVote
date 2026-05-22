@@ -13,8 +13,8 @@ Professional engineering principles applied:
 - Readable structure
 """
 
-from pathlib import Path
 from datetime import timedelta
+from pathlib import Path
 
 from decouple import config
 
@@ -193,7 +193,10 @@ AUTH_USER_MODEL = "users.User"
 # Built-in validators improve password security.
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "UserAttributeSimilarityValidator"
+        ),
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",

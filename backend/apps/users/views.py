@@ -1,30 +1,13 @@
-from django.shortcuts import render
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 
 # Create your views here.
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
-
-from apps.users.serializers import (
-    UserRegistrationSerializer,
-    UserSerializer,
-)
-
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from apps.users.permissions import (
-    IsAdminUserRole,
-)
-
-from apps.users.permissions import (
-    IsVoterRole,
-    IsVerifiedUser,
-)
-
-from drf_spectacular.utils import (
-    extend_schema,
-    OpenApiResponse,
-)
+from apps.users.permissions import IsAdminUserRole, IsVerifiedUser, IsVoterRole
+from apps.users.serializers import UserRegistrationSerializer, UserSerializer
 
 
 @extend_schema(

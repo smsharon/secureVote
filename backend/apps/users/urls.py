@@ -1,14 +1,13 @@
 from django.urls import path
-
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
 
 from apps.users.views import (
-    UserRegistrationView,
-    CurrentUserView,
     AdminDashboardView,
+    CurrentUserView,
+    UserRegistrationView,
     VerifiedVoterView,
 )
 

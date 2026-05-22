@@ -1,17 +1,11 @@
-import factory
-
-from django.utils import timezone
 from datetime import timedelta
 
-from apps.elections.models import (
-    Election,
-    Position,
-    Candidate,
-)
 
-from tests.factories.user_factory import (
-    UserFactory,
-)
+from django.utils import timezone
+import factory
+
+from apps.elections.models import Candidate, Election, Position
+from tests.factories.user_factory import UserFactory
 
 
 class ElectionFactory(factory.django.DjangoModelFactory):

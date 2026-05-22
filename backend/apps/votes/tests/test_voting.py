@@ -1,24 +1,14 @@
+from django.urls import reverse
 import pytest
 
-from django.urls import reverse
-
-from tests.base import (
-    AuthenticatedAPITestCase,
-)
-
-from tests.factories.user_factory import (
-    UserFactory,
-)
-
+from tests.base import AuthenticatedAPITestCase
 from tests.factories.election_factory import (
+    CandidateFactory,
     ElectionFactory,
     PositionFactory,
-    CandidateFactory,
 )
-
-from tests.factories.vote_factory import (
-    VoteFactory,
-)
+from tests.factories.user_factory import UserFactory
+from tests.factories.vote_factory import VoteFactory
 
 
 @pytest.mark.django_db
