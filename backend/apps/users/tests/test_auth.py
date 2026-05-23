@@ -39,7 +39,7 @@ def test_user_login():
 
     client = APIClient()
 
-    user = User.objects.create_user(
+    _ = User.objects.create_user(
         username="john",
         email="john@example.com",
         password="StrongPass123!",
