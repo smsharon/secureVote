@@ -8,7 +8,7 @@ include = '\.pyi?$'
 
 exclude = '''
 /(
-    \.git
+    \.git 
   | \.venv
   | venv
   | migrations

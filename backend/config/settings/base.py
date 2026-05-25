@@ -221,9 +221,7 @@ REST_FRAMEWORK = {
     ),
     # Secure-by-default permissions.
     # Endpoints are protected unless explicitly made public.
-    "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticated",
-    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     # OpenAPI schema generation.
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     # Enables filtering, searching, and ordering support.

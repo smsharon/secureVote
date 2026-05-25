@@ -71,7 +71,4 @@ class Vote(models.Model):
         Human-readable vote representation.
         """
 
-        return (
-            f"{self.voter.username} voted for "
-            f"{self.candidate.user.username}"
-        )
+        return f"{self.voter.username} voted for " f"{self.candidate.user.username}"

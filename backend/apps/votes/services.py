@@ -71,9 +71,7 @@ class ResultService:
         Determines winners per position.
         """
 
-        election = Election.objects.prefetch_related("positions").get(
-            id=election_id
-        )
+        election = Election.objects.prefetch_related("positions").get(id=election_id)
 
         winners = []
 
@@ -108,9 +106,7 @@ class ResultService:
 
         total_votes = Vote.objects.filter(election_id=election_id).count()
 
-        total_candidates = Candidate.objects.filter(
-            election_id=election_id
-        ).count()
+        total_candidates = Candidate.objects.filter(election_id=election_id).count()
 
         return {
             "total_votes": total_votes,

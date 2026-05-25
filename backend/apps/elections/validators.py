@@ -10,6 +10,4 @@ def validate_election_dates(
     """
 
     if start_date >= end_date:
-        raise ValidationError(
-            {"end_date": "End date must be after start date."}
-        )
+        raise ValidationError({"end_date": "End date must be after start date."})
