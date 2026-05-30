@@ -29,7 +29,7 @@ RUN pip install -r requirements.txt
 # Copy project
 COPY . .
 
-# Expose Django port
+# Expose Django por
 EXPOSE 8000
 
 # Start command
