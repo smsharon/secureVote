@@ -17,6 +17,7 @@ from datetime import timedelta
 from pathlib import Path
 
 from decouple import config
+import os
 
 # =========================================================
 # CORE PROJECT PATHS
@@ -409,14 +410,14 @@ LOGGING = {
 # Celery Configuration
 # ============================================================================
 
-CELERY_BROKER_URL = env(
+CELERY_BROKER_URL = os.getenv(
     "CELERY_BROKER_URL",
-    default="redis://redis:6379/0",
+    "redis://redis:6379/0",
 )
 
-CELERY_RESULT_BACKEND = env(
+CELERY_RESULT_BACKEND = os.getenv(
     "CELERY_RESULT_BACKEND",
-    default="redis://redis:6379/0",
+    "redis://redis:6379/0",
 )
 
 CELERY_ACCEPT_CONTENT = ["json"]
