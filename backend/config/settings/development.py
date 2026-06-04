@@ -1,12 +1,11 @@
 """
 Development settings.
 """
+import os
 
 from .base import *  # noqa: F401,F403
 
 DEBUG = True
-
-import os
 
 ALLOWED_HOSTS = os.getenv(
     "ALLOWED_HOSTS",
