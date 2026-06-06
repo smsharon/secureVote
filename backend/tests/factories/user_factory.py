@@ -32,3 +32,7 @@ class UserFactory(factory.django.DjangoModelFactory):
         obj.set_password(password)
 
         obj.save()
+
+        
+
+        
