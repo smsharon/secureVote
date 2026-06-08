@@ -1,6 +1,5 @@
-
-from django.urls import reverse
 import pytest
+from django.urls import reverse
 
 from tests.base import AuthenticatedAPITestCase
 from tests.factories.election_factory import (

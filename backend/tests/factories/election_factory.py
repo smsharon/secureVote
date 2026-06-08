@@ -1,8 +1,7 @@
 from datetime import timedelta
 
-from django.utils import timezone
 import factory
-
+from django.utils import timezone
 
 from apps.elections.models import Candidate, Election, Position
 from tests.factories.user_factory import UserFactory

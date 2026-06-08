@@ -1,6 +1,6 @@
 [tool.black]
 
-line-length = 79
+line-length = 88
 
 target-version = ["py311"]
 
@@ -17,3 +17,8 @@ exclude = '''
   | dist
 )/
 '''
+
+[tool.isort]
+profile = "black"
+line_length = 88
+multi_line_output = 3

@@ -41,4 +41,4 @@ SECURE_PROXY_SSL_HEADER = (
 )
 
 # Static files configuration for production
-STATIC_ROOT = BASE_DIR / "staticfiles"   # noqa: F405
+STATIC_ROOT = BASE_DIR / "staticfiles"  # noqa: F405

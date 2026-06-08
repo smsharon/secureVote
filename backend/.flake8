@@ -18,6 +18,7 @@ ignore =
     D401,
     I202
 
+extend-ignore = E203,W503
 per-file-ignores =
     __init__.py:F401
 
