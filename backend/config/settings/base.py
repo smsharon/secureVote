@@ -74,6 +74,7 @@ THIRD_PARTY_APPS = [
     "django_filters",
     # Cross-Origin Resource Sharing
     "corsheaders",
+    "rest_framework_simplejwt.token_blacklist",
 ]
 
 # Local project applications.
@@ -210,6 +211,23 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+
+SIMPLE_JWT = {
+    # Access token expires quickly
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    # Refresh token lasts longer
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    # Generate a new refresh token on refresh
+    "ROTATE_REFRESH_TOKENS": True,
+    # Blacklist old refresh tokens
+    "BLACKLIST_AFTER_ROTATION": True,
+    # Update last login time
+    "UPDATE_LAST_LOGIN": True,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
 
 
 # =========================================================

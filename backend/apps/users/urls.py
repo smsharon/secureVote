@@ -4,6 +4,7 @@ from apps.users.views import (
     AdminDashboardView,
     CurrentUserView,
     LoginView,
+    LogoutView,
     RefreshTokenView,
     UserRegistrationView,
     VerifiedVoterView,
@@ -43,5 +44,10 @@ urlpatterns = [
         "verified-voter/",
         VerifiedVoterView.as_view(),
         name="verified-voter",
+    ),
+    path(
+        "logout/",
+        LogoutView.as_view(),
+        name="user-logout",
     ),
 ]

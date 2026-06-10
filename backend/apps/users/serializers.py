@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.users.services import UserService
 
@@ -87,3 +88,21 @@ class UserSerializer(serializers.ModelSerializer):
             "is_verified",
             "created_at",
         ]
+
+
+class LogoutSerializer(serializers.Serializer):
+    """
+
+    Blacklists a refresh token during logout.
+    """
+
+    refresh = serializers.CharField()
+
+    def save(self, **kwargs):
+        """
+        Blacklist refresh token.
+        """
+
+        token = RefreshToken(self.validated_data["refresh"])
+
+        token.blacklist()

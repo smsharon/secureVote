@@ -3,8 +3,8 @@ from django_ratelimit.decorators import ratelimit
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 
 # Create your views here.
-from rest_framework import generics
-from rest_framework.permissions import AllowAny
+from rest_framework import generics, status
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import (
@@ -13,7 +13,11 @@ from rest_framework_simplejwt.views import (
 )
 
 from apps.users.permissions import IsAdminUserRole, IsVerifiedUser, IsVoterRole
-from apps.users.serializers import UserRegistrationSerializer, UserSerializer
+from apps.users.serializers import (
+    LogoutSerializer,
+    UserRegistrationSerializer,
+    UserSerializer,
+)
 
 
 @method_decorator(
@@ -123,3 +127,27 @@ class RefreshTokenView(TokenRefreshView):
     JWT refresh endpoint.
     Limits refresh token requests.
     """
+
+
+class LogoutView(APIView):
+    """
+    Logout authenticated user.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        """
+        Blacklist refresh token.
+        """
+
+        serializer = LogoutSerializer(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save()
+
+        return Response(
+            {"detail": "Logged out successfully."},
+            status=status.HTTP_205_RESET_CONTENT,
+        )
