@@ -1,12 +1,10 @@
 from django.urls import path
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
 
 from apps.users.views import (
     AdminDashboardView,
     CurrentUserView,
+    LoginView,
+    RefreshTokenView,
     UserRegistrationView,
     VerifiedVoterView,
 )
@@ -21,13 +19,13 @@ urlpatterns = [
     # Login
     path(
         "login/",
-        TokenObtainPairView.as_view(),
+        LoginView.as_view(),
         name="token-obtain-pair",
     ),
     # Refresh token
     path(
         "token/refresh/",
-        TokenRefreshView.as_view(),
+        RefreshTokenView.as_view(),
         name="token-refresh",
     ),
     # Current authenticated user

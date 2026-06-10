@@ -1,3 +1,5 @@
+from django.utils.decorators import method_decorator
+from django_ratelimit.decorators import ratelimit
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 
 # Create your views here.
@@ -5,11 +7,24 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 from apps.users.permissions import IsAdminUserRole, IsVerifiedUser, IsVoterRole
 from apps.users.serializers import UserRegistrationSerializer, UserSerializer
 
 
+@method_decorator(
+    ratelimit(
+        key="ip",
+        rate="5/m",
+        method="POST",
+        block=True,
+    ),
+    name="post",
+)
 @extend_schema(
     summary="Register a new user",
     description=("Creates a new voter account."),
@@ -74,3 +89,37 @@ class VerifiedVoterView(APIView):
         """
 
         return Response({"message": "You are a verified voter."})
+
+
+@method_decorator(
+    ratelimit(
+        key="ip",
+        rate="5/m",
+        method="POST",
+        block=True,
+    ),
+    name="post",
+)
+class LoginView(TokenObtainPairView):
+    """
+    JWT authentication endpoint.
+
+    Limits login attempts to prevent
+    brute-force attacks.
+    """
+
+
+@method_decorator(
+    ratelimit(
+        key="ip",
+        rate="20/m",
+        method="POST",
+        block=True,
+    ),
+    name="post",
+)
+class RefreshTokenView(TokenRefreshView):
+    """
+    JWT refresh endpoint.
+    Limits refresh token requests.
+    """

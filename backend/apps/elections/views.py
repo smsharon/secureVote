@@ -1,4 +1,6 @@
 # Create your views here.
+from django.utils.decorators import method_decorator
+from django_ratelimit.decorators import ratelimit
 from rest_framework import generics
 
 from apps.elections.models import Candidate, Election, Position
@@ -10,6 +12,15 @@ from apps.elections.serializers import (
 from apps.users.permissions import IsAdminUserRole
 
 
+@method_decorator(
+    ratelimit(
+        key="user",
+        rate="20/h",
+        method="POST",
+        block=True,
+    ),
+    name="post",
+)
 class ElectionListCreateView(generics.ListCreateAPIView):
     """
     Handles election listing and creation.

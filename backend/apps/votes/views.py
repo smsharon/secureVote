@@ -1,3 +1,5 @@
+from django.utils.decorators import method_decorator
+from django_ratelimit.decorators import ratelimit
 from drf_spectacular.utils import extend_schema
 
 # Create your views here.
@@ -12,6 +14,15 @@ from apps.votes.serializers import VoteSerializer
 from apps.votes.services import ResultService
 
 
+@method_decorator(
+    ratelimit(
+        key="user",
+        rate="10/m",
+        method="POST",
+        block=True,
+    ),
+    name="post",
+)
 @extend_schema(
     summary="Cast secure vote",
     description=("Allows verified voters to cast " "a vote securely."),
