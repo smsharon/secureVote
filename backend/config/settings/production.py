@@ -17,6 +17,10 @@ ALLOWED_HOSTS = os.getenv(
     "",
 ).split(",")
 
+CORS_ALLOWED_ORIGINS = [
+    "https://securevote.vercel.app",
+]
+
 # ==================================================
 # Security
 # ==================================================
