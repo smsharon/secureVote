@@ -1,36 +1,63 @@
-# Use official Python image
-FROM python:3.11-slim
+# ==========================
+# Builder Stage
+# ==========================
+FROM python:3.11-slim AS builder
 
-# Prevent Python from writing pyc files
 ENV PYTHONDONTWRITEBYTECODE=1
-
-# Prevent Python buffering stdout/stderr
 ENV PYTHONUNBUFFERED=1
 
-# Set working directory
 WORKDIR /app
 
-# Install system dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
     libpq-dev \
-    netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip
+COPY requirements.txt .
+
 RUN pip install --upgrade pip
 
-# Copy requirements first for Docker layer caching
-COPY requirements.txt ./requirements.txt
+RUN pip install --prefix=/install -r requirements.txt
 
-# Install Python dependencies
-RUN pip install -r requirements.txt
+# ==========================
+# Runtime Stage
+# ==========================
+FROM python:3.11-slim
 
-# Copy project
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    libpq5 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN addgroup --system django && \
+    adduser --system --ingroup django django
+
+COPY --from=builder /install /usr/local
+
 COPY . .
 
-# Expose Django por
+RUN chown -R django:django /app
+
+USER django
+
 EXPOSE 8000
 
-# Start command
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+COPY . .
+
+COPY entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD [
+    "gunicorn",
+    "config.wsgi:application",
+    "--config",
+    "config/gunicorn.py"
+]

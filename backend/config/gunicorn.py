@@ -17,3 +17,5 @@ accesslog = "-"
 errorlog = "-"
 
 loglevel = "info"
+
+worker_class = "gthread"
