@@ -1,0 +1,11 @@
+/*
+ * Global application styles.
+ *
+ * Component-specific styles should remain close to their
+ * respective components where practical.
+ */
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
