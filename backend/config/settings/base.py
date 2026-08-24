@@ -338,12 +338,12 @@ SPECTACULAR_SETTINGS = {
 
 # Allows frontend applications to communicate with backend.
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "http://localhost:5173",
 ]
 
 # Trusted origins for CSRF protection.
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
+    "http://localhost:5173",
 ]
 
 
