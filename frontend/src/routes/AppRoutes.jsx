@@ -6,7 +6,7 @@ Routes,
 } from "react-router-dom";
 
 import AdminDashboard from "../pages/AdminDashboard";
-import Dashboard from "../pages/Dashboard";
+import DashboardRedirect from "../pages/DashboardRedirect";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import VoterDashboard from "../pages/VoterDashboard";
@@ -40,7 +40,7 @@ PUBLIC ROUTES
         {/* General authenticated dashboard */}
         <Route
           path="/dashboard"
-          element={<Dashboard />}
+          element={<DashboardRedirect />}
         />
 
         {/* =========================
