@@ -42,7 +42,7 @@ function Login() {
     try {
       await login(formData);
 
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
         const responseData = error.response?.data;
 
