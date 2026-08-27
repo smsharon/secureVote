@@ -1,7 +1,11 @@
 import AppRoutes from "./routes/AppRoutes";
 
-function App() {
-return <AppRoutes />;
-}
+/**
+
+* Root component for the SecureVote frontend.
+  */
+  function App() {
+  return <AppRoutes />;
+  }
 
 export default App;
