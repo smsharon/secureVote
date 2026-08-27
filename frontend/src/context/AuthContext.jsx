@@ -21,6 +21,9 @@ export function AuthProvider({ children }) {
 
       return userData;
     } catch {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+
       setUser(null);
 
       return null;

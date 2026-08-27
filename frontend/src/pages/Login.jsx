@@ -44,11 +44,15 @@ function Login() {
 
       navigate("/");
     } catch (error) {
-      const message =
-        error.response?.data?.detail ||
-        "Invalid email or password.";
+        const responseData = error.response?.data;
 
-      setError(message);
+        const message =
+            responseData?.detail ||
+            responseData?.email?.[0] ||
+            responseData?.password?.[0] ||
+            "Unable to sign in. Please check your credentials.";
+
+        setError(message);
     } finally {
       setIsSubmitting(false);
     }
