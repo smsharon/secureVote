@@ -4,22 +4,24 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 /**
- * Login page for SecureVote users.
+ * Registration page for new SecureVote users.
  */
-function Login() {
+function Register() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { register } = useAuth();
 
   const [formData, setFormData] = useState({
     username: "",
+    email: "",
     password: "",
+    password_confirm: "",
   });
 
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   /**
-   * Handles changes to form fields.
+   * Handles changes to registration fields.
    */
   function handleChange(event) {
     const { name, value } = event.target;
@@ -31,28 +33,34 @@ function Login() {
   }
 
   /**
-   * Handles login form submission.
+   * Handles registration form submission.
    */
   async function handleSubmit(event) {
     event.preventDefault();
 
     setError("");
+
+    if (formData.password !== formData.password_confirm) {
+      setError("Passwords do not match.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      await login(formData);
+      await register(formData);
 
-      navigate("/");
+      navigate("/login");
     } catch (error) {
-        const responseData = error.response?.data;
+      const responseData = error.response?.data;
 
-        const message =
-            responseData?.detail ||
-            responseData?.username?.[0] ||
-            responseData?.password?.[0] ||
-            "Unable to sign in. Please check your credentials.";
+      const message =
+        responseData?.detail ||
+        responseData?.email?.[0] ||
+        responseData?.password?.[0] ||
+        "Unable to create your account.";
 
-        setError(message);
+      setError(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -63,9 +71,9 @@ function Login() {
       <section>
         <h1>SecureVote</h1>
 
-        <h2>Sign in</h2>
+        <h2>Create an account</h2>
 
-        <p>Sign in to access your SecureVote account.</p>
+        <p>Register to participate in SecureVote elections.</p>
 
         {error && <p role="alert">{error}</p>}
 
@@ -85,6 +93,20 @@ function Login() {
           </div>
 
           <div>
+            <label htmlFor="email">Email</label>
+
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              autoComplete="email"
+              required
+            />
+          </div>
+
+          <div>
             <label htmlFor="password">Password</label>
 
             <input
@@ -93,23 +115,39 @@ function Login() {
               type="password"
               value={formData.password}
               onChange={handleChange}
-              autoComplete="current-password"
+              autoComplete="new-password"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password_confirm">
+              Confirm password
+            </label>
+
+            <input
+              id="password_confirm"
+              name="password_confirm"
+              type="password"
+              value={formData.password_confirm}
+              onChange={handleChange}
+              autoComplete="new-password"
               required
             />
           </div>
 
           <button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Signing in..." : "Sign in"}
+            {isSubmitting ? "Creating account..." : "Create account"}
           </button>
         </form>
 
         <p>
-          Don't have an account?{" "}
-          <Link to="/register">Create an account</Link>
+          Already have an account?{" "}
+          <Link to="/login">Sign in</Link>
         </p>
       </section>
     </main>
   );
 }
 
-export default Login;
+export default Register;

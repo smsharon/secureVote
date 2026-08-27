@@ -33,6 +33,16 @@ export function AuthProvider({ children }) {
   }, []);
 
   /**
+  * Registers a new SecureVote user.
+  *
+  * @param {Object} userData - User registration details.
+  * @returns {Promise<Object>} Newly created user data.
+  */
+  const register = useCallback(async (userData) => {
+    return authService.register(userData);
+  }, []);
+
+  /**
    * Authenticates a user and stores the JWT tokens.
    *
    * @param {Object} credentials - User email and password.
@@ -112,6 +122,7 @@ export function AuthProvider({ children }) {
         user,
         loading,
         login,
+        register,
         logout,
         loadCurrentUser,
       }}
