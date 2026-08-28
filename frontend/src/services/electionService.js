@@ -72,8 +72,32 @@ return response.data;
 return response.data;
 };
 
+/**
+
+* Retrieves an election by its ID.
+*
+* @param {string|number} electionId - Election ID.
+* @returns {Promise<Object|null>} Election object.
+  */
+  const getElection = async (electionId) => {
+  const response = await apiClient.get("/elections/");
+
+const elections = Array.isArray(response.data)
+? response.data
+: response.data.results || [];
+
+return (
+elections.find(
+(election) =>
+String(election.id) === String(electionId),
+) || null
+);
+};
+
+
 const electionService = {
 getElections,
+getElection,
 createElection,
 getPositions,
 createPosition,

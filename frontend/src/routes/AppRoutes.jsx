@@ -56,6 +56,11 @@ PUBLIC ROUTES
             path="/voter"
             element={<VoterDashboard />}
           />
+
+          <Route
+            path="/elections/:id"
+            element={<ElectionDetails />}
+          />
         </Route>
 
         {/* =========================
@@ -86,10 +91,7 @@ PUBLIC ROUTES
           element={<Elections />}
         />
 
-        <Route
-          path="/elections/:id"
-          element={<ElectionDetails />}
-        />
+        
 
         <Route
           path="/my-votes"
