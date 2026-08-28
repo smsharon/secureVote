@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import { useAuth } from "../hooks/useAuth";
 
 /**
@@ -15,9 +17,27 @@ return ( <section> <h1>Voter Dashboard</h1>
   </p>
 
   <p>
-    You can view elections and participate in
+    View available elections and participate in
     eligible voting activities.
   </p>
+
+  <div>
+    <Link to="/elections">
+      View Elections
+    </Link>
+  </div>
+
+  <div>
+    <Link to="/my-votes">
+      My Votes
+    </Link>
+  </div>
+
+  <div>
+    <Link to="/profile">
+      My Profile
+    </Link>
+  </div>
 </section>
 
 

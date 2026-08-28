@@ -13,6 +13,7 @@ import VoterDashboard from "../pages/VoterDashboard";
 import AppLayout from "../layouts/AppLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import RoleRoute from "./RoleRoute";
+import Elections from "../pages/Elections";
 
 function AppRoutes() {
 return ( <BrowserRouter> <Routes>
@@ -68,14 +69,7 @@ PUBLIC ROUTES
         {/* Temporary authenticated pages */}
         <Route
           path="/elections"
-          element={
-            <div>
-              <h1>Elections</h1>
-              <p>
-                Election management will be available here.
-              </p>
-            </div>
-          }
+          element={<Elections />}
         />
 
         <Route
