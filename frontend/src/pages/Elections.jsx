@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import electionService from "../services/electionService";
 
@@ -98,6 +99,10 @@ return ( <section> <h1>Elections</h1>
               election.end_date,
             ).toLocaleString()}
           </p>
+
+          <Link to={`/elections/${election.id}`}>
+            View Election
+          </Link>
         </article>
       ))}
     </div>

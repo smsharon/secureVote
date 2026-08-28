@@ -14,6 +14,7 @@ import AppLayout from "../layouts/AppLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import RoleRoute from "./RoleRoute";
 import Elections from "../pages/Elections";
+import ElectionDetails from "../pages/ElectionDetails";
 
 function AppRoutes() {
 return ( <BrowserRouter> <Routes>
@@ -70,6 +71,11 @@ PUBLIC ROUTES
         <Route
           path="/elections"
           element={<Elections />}
+        />
+
+        <Route
+          path="/elections/:id"
+          element={<ElectionDetails />}
         />
 
         <Route
