@@ -2,6 +2,7 @@
 from django.utils.decorators import method_decorator
 from django_ratelimit.decorators import ratelimit
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 
 from apps.elections.models import Candidate, Election, Position
 from apps.elections.serializers import (
@@ -32,13 +33,22 @@ class ElectionListCreateView(generics.ListCreateAPIView):
 
     def get_permissions(self):
         """
-        Assigns permissions dynamically.
+        Assigns permissions based on the HTTP method.
+
+        ```
+        GET:
+            Any authenticated user can view elections.
+
+        POST:
+            Only administrators can create elections.
         """
 
         if self.request.method == "POST":
             return [IsAdminUserRole()]
 
-        return super().get_permissions()
+        return [IsAuthenticated()]
+
+
 
     def perform_create(self, serializer):
         """
@@ -50,19 +60,42 @@ class ElectionListCreateView(generics.ListCreateAPIView):
 
 class PositionListCreateView(generics.ListCreateAPIView):
     """
-    Handles position listing and creation.
+    Handles election position listing and creation.
+
+    
+    Authenticated users can view positions.
+    Only administrators can create positions.
     """
 
     queryset = Position.objects.select_related("election")
 
     serializer_class = PositionSerializer
 
-    permission_classes = [IsAdminUserRole]
+    def get_permissions(self):
+        """
+        Assigns permissions based on the HTTP method.
+
+        GET:
+            Any authenticated user can view positions.
+
+        POST:
+            Only administrators can create positions.
+        """
+
+        if self.request.method == "POST":
+            return [IsAdminUserRole()]
+
+        return [IsAuthenticated()]
+    
 
 
 class CandidateListCreateView(generics.ListCreateAPIView):
     """
-    Handles candidate listing and creation.
+    Handles election candidate listing and creation.
+
+  
+    Authenticated users can view candidates.
+    Only administrators can create candidates.
     """
 
     queryset = Candidate.objects.select_related(
@@ -73,4 +106,20 @@ class CandidateListCreateView(generics.ListCreateAPIView):
 
     serializer_class = CandidateSerializer
 
-    permission_classes = [IsAdminUserRole]
+    def get_permissions(self):
+        """
+        Assigns permissions based on the HTTP method.
+
+        GET:
+            Any authenticated user can view candidates.
+
+        POST:
+            Only administrators can create candidates.
+        """
+
+        if self.request.method == "POST":
+            return [IsAdminUserRole()]
+
+        return [IsAuthenticated()]
+
+
