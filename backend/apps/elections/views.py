@@ -91,12 +91,9 @@ class PositionListCreateView(generics.ListCreateAPIView):
 
 class CandidateListCreateView(generics.ListCreateAPIView):
     """
-    Handles election candidate listing and creation.
-
-  
-    Authenticated users can view candidates.
-    Only administrators can create candidates.
+    Handles candidate listing and creation.
     """
+
 
     queryset = Candidate.objects.select_related(
         "user",
@@ -108,18 +105,17 @@ class CandidateListCreateView(generics.ListCreateAPIView):
 
     def get_permissions(self):
         """
-        Assigns permissions based on the HTTP method.
-
-        GET:
-            Any authenticated user can view candidates.
-
-        POST:
-            Only administrators can create candidates.
+        Allows authenticated users to view candidates,
+        while restricting candidate creation to admins.
         """
 
         if self.request.method == "POST":
             return [IsAdminUserRole()]
 
         return [IsAuthenticated()]
+    
+
+
+
 
 

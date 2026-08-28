@@ -1,8 +1,10 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from apps.elections.models import Candidate, Election, Position
 from apps.elections.validators import validate_election_dates
 
+User = get_user_model()
 
 class ElectionSerializer(serializers.ModelSerializer):
     """
@@ -65,7 +67,16 @@ class CandidateSerializer(serializers.ModelSerializer):
     Serializer for election candidates.
     """
 
-    user = serializers.StringRelatedField(
+
+    user = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.filter(
+            role=User.Role.VOTER,
+        ),
+        write_only=True,
+    )
+
+    username = serializers.CharField(
+        source="user.username",
         read_only=True,
     )
 
@@ -77,7 +88,34 @@ class CandidateSerializer(serializers.ModelSerializer):
             "election",
             "position",
             "user",
+            "username",
             "manifesto",
             "image",
             "created_at",
         ]
+
+    def validate(self, attrs):
+        """
+        Ensures the position belongs to the selected election.
+        """
+
+        election = attrs.get("election")
+        position = attrs.get("position")
+
+        if position.election_id != election.id:
+            raise serializers.ValidationError(
+                {
+                    "position": (
+                        "The selected position does not "
+                        "belong to the selected election."
+                    )
+                }
+            )
+
+        return attrs
+
+
+
+
+
+

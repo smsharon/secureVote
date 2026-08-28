@@ -106,3 +106,18 @@ class LogoutSerializer(serializers.Serializer):
         token = RefreshToken(self.validated_data["refresh"])
 
         token.blacklist()
+
+class CandidateUserSerializer(serializers.ModelSerializer):
+    """
+    Safe user representation for selecting candidates.
+    """
+
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "username",
+            "email",
+        ]
+

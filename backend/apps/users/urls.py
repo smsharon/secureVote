@@ -2,6 +2,7 @@ from django.urls import path
 
 from apps.users.views import (
     AdminDashboardView,
+    CandidateUserListView,
     CurrentUserView,
     LoginView,
     LogoutView,
@@ -49,5 +50,11 @@ urlpatterns = [
         "logout/",
         LogoutView.as_view(),
         name="user-logout",
+    ),
+
+    path(
+        "candidate-users/",
+        CandidateUserListView.as_view(),
+        name="candidate-users",
     ),
 ]

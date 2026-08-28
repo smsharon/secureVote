@@ -17,6 +17,7 @@ import Elections from "../pages/Elections";
 import ElectionDetails from "../pages/ElectionDetails";
 import AdminElections from "../pages/AdminElections";
 import AdminPositions from "../pages/AdminPositions";
+import AdminCandidates from "../pages/AdminCandidates";
 
 function AppRoutes() {
 return ( <BrowserRouter> <Routes>
@@ -81,6 +82,11 @@ PUBLIC ROUTES
           <Route
             path="/admin/elections/:id/positions"
             element={<AdminPositions />}
+          />
+
+          <Route
+            path="/admin/candidates"
+            element={<AdminCandidates />}
           />
         </Route>
         

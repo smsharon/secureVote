@@ -1,5 +1,6 @@
 from django.utils.decorators import method_decorator
 from django_ratelimit.decorators import ratelimit
+from django.contrib.auth import get_user_model
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 
 # Create your views here.
@@ -17,8 +18,10 @@ from apps.users.serializers import (
     LogoutSerializer,
     UserRegistrationSerializer,
     UserSerializer,
+    CandidateUserSerializer,
 )
 
+User = get_user_model()
 
 @method_decorator(
     ratelimit(
@@ -151,3 +154,23 @@ class LogoutView(APIView):
             {"detail": "Logged out successfully."},
             status=status.HTTP_205_RESET_CONTENT,
         )
+
+class CandidateUserListView(generics.ListAPIView):
+    """
+    Returns users that an administrator can select
+    when creating candidate profiles.
+    """
+
+    serializer_class = CandidateUserSerializer
+    permission_classes = [IsAdminUserRole]
+
+    def get_queryset(self):
+        """
+        Returns voter accounts that are not already
+        candidates for every position.
+        """
+
+        return User.objects.filter(
+            role=User.Role.VOTER,
+        ).order_by("username")
+    

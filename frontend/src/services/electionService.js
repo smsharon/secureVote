@@ -94,6 +94,23 @@ String(election.id) === String(electionId),
 );
 };
 
+const getCandidateUsers = async () => {
+const response = await apiClient.get(
+"/users/candidate-users/",
+);
+
+return response.data;
+};
+
+const createCandidate = async (candidateData) => {
+const response = await apiClient.post(
+"/elections/candidates/",
+candidateData,
+);
+
+return response.data;
+};
+
 
 const electionService = {
 getElections,
@@ -102,6 +119,8 @@ createElection,
 getPositions,
 createPosition,
 getCandidates,
+getCandidateUsers,
+createCandidate,
 };
 
 export default electionService;
