@@ -67,7 +67,7 @@ class CandidateSerializer(serializers.ModelSerializer):
     Serializer for election candidates.
     """
 
-
+    
     user = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.filter(
             role=User.Role.VOTER,
@@ -96,11 +96,13 @@ class CandidateSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         """
-        Ensures the position belongs to the selected election.
+        Validates candidate election and position
+        relationships.
         """
 
         election = attrs.get("election")
         position = attrs.get("position")
+        user = attrs.get("user")
 
         if position.election_id != election.id:
             raise serializers.ValidationError(
@@ -112,7 +114,21 @@ class CandidateSerializer(serializers.ModelSerializer):
                 }
             )
 
+        if Candidate.objects.filter(
+            position=position,
+            user=user,
+        ).exists():
+            raise serializers.ValidationError(
+                {
+                    "user": (
+                        "This user is already a candidate "
+                        "for this position."
+                    )
+                }
+            )
+
         return attrs
+    
 
 
 

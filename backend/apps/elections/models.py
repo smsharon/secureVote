@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 
 class Election(models.Model):
@@ -149,12 +150,39 @@ class Candidate(models.Model):
     class Meta:
         db_table = "candidates"
 
+
         ordering = ["user__username"]
 
-        unique_together = (
-            "position",
-            "user",
-        )
+        constraints = [
+            models.UniqueConstraint(
+                fields=["position", "user"],
+                name="unique_candidate_per_position",
+            ),
+        ]
+
+
+    
+    def clean(self):
+        """
+        Validates that the candidate's position belongs
+        to the same election.
+        """
+
+        
+        if (
+            self.position_id
+            and self.election_id
+            and self.position.election_id != self.election_id
+        ):
+            raise ValidationError(
+                {
+                    "position": (
+                        "The candidate's position must "
+                        "belong to the selected election."
+                    )
+                }
+            )
+        
 
     def __str__(self):
         """
