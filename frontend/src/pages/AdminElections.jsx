@@ -286,11 +286,11 @@ return ( <section> <h1>Manage Elections</h1>
             ).toLocaleString()}
           </p>
 
-          <Link
-            to={`/elections/${election.id}`}
-          >
-            View Election
-          </Link>
+          <div>
+            <Link to={`/admin/elections/${election.id}/positions`}>
+                Manage Positions
+            </Link>
+          </div>
         </article>
       ))}
     </div>
