@@ -15,6 +15,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import RoleRoute from "./RoleRoute";
 import Elections from "../pages/Elections";
 import ElectionDetails from "../pages/ElectionDetails";
+import AdminElections from "../pages/AdminElections";
 
 function AppRoutes() {
 return ( <BrowserRouter> <Routes>
@@ -65,7 +66,13 @@ PUBLIC ROUTES
             path="/admin"
             element={<AdminDashboard />}
           />
+
+          <Route
+            path="/admin/elections"
+            element={<AdminElections />}
+          />
         </Route>
+        
 
         {/* Temporary authenticated pages */}
         <Route

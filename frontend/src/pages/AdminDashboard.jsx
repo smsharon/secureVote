@@ -1,4 +1,5 @@
 import { useAuth } from "../hooks/useAuth";
+import { Link } from "react-router-dom";
 
 /**
 
@@ -17,6 +18,10 @@ return ( <section> <h1>Admin Dashboard</h1>
   <p>
     You have administrator access to SecureVote.
   </p>
+
+  <Link to="/admin/elections">
+    Manage Elections
+  </Link>
 </section>
 
 

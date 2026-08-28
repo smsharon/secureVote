@@ -14,6 +14,22 @@ return response.data;
 
 /**
 
+* Creates a new election.
+*
+* @param {Object} electionData - Election information.
+* @returns {Promise<Object>} Created election.
+  */
+  const createElection = async (electionData) => {
+  const response = await apiClient.post(
+  "/elections/",
+  electionData,
+  );
+
+return response.data;
+};
+
+/**
+
 * Retrieves all positions.
 *
 * @returns {Promise<Object>} Position response.
@@ -42,6 +58,7 @@ return response.data;
 
 const electionService = {
 getElections,
+createElection,
 getPositions,
 getCandidates,
 };
