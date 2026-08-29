@@ -4,9 +4,10 @@ from django_ratelimit.decorators import ratelimit
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
-from apps.elections.models import Candidate, Election, Position
+from apps.elections.models import Candidate, CandidateApplication, Election, Position
 from apps.elections.serializers import (
     CandidateSerializer,
+    CandidateApplicationSerializer,
     ElectionSerializer,
     PositionSerializer,
 )
@@ -113,7 +114,76 @@ class CandidateListCreateView(generics.ListCreateAPIView):
             return [IsAdminUserRole()]
 
         return [IsAuthenticated()]
+
+class CandidateApplicationListCreateView(
+    generics.ListCreateAPIView
+    ):
+    """
+    Allows authenticated voters to submit candidacy
+    applications and view their own applications.
+    """
+
+
+    serializer_class = CandidateApplicationSerializer
+
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        """
+        Returns only the authenticated user's applications.
+        """
+
+        return CandidateApplication.objects.select_related(
+            "applicant",
+            "election",
+            "position",
+            "reviewed_by",
+        ).filter(
+            applicant=self.request.user,
+        )
+
+    def perform_create(self, serializer):
+        """
+        Creates a pending application for the
+        authenticated voter.
+        """
+
+        if self.request.user.role != self.request.user.Role.VOTER:
+            from rest_framework.exceptions import PermissionDenied
+
+            raise PermissionDenied(
+                "Only voters can submit candidacy applications."
+            )
+
+        serializer.save(
+            applicant=self.request.user,
+            status=CandidateApplication.Status.PENDING,
+        )
+
+class MyCandidateApplicationsView(
+    generics.ListAPIView
+    ):
+    """
+    Returns candidacy applications belonging to
+    the authenticated user.
+    """
+
+    serializer_class = CandidateApplicationSerializer
+
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return CandidateApplication.objects.select_related(
+            "applicant",
+            "election",
+            "position",
+            "reviewed_by",
+        ).filter(
+            applicant=self.request.user,
+        )
     
+
+
 
 
 

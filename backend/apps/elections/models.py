@@ -190,3 +190,121 @@ class Candidate(models.Model):
         """
 
         return f"{self.user.username} " f"- {self.position.title}"
+
+class CandidateApplication(models.Model):
+    """
+    Represents a user's application to become a candidate
+    in a specific election position.
+    """
+
+
+    class Status(models.TextChoices):
+        PENDING = "PENDING", "Pending"
+        APPROVED = "APPROVED", "Approved"
+        REJECTED = "REJECTED", "Rejected"
+
+    applicant = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="candidate_applications",
+    )
+
+    election = models.ForeignKey(
+        Election,
+        on_delete=models.CASCADE,
+        related_name="candidate_applications",
+    )
+
+    position = models.ForeignKey(
+        Position,
+        on_delete=models.CASCADE,
+        related_name="candidate_applications",
+    )
+
+    manifesto = models.TextField()
+
+    image = models.ImageField(
+        upload_to="candidate_applications/",
+        blank=True,
+        null=True,
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PENDING,
+    )
+
+    rejection_reason = models.TextField(
+        blank=True,
+    )
+
+    submitted_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    reviewed_at = models.DateTimeField(
+        blank=True,
+        null=True,
+    )
+
+    reviewed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="reviewed_candidate_applications",
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        db_table = "candidate_applications"
+
+        ordering = ["-submitted_at"]
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=["applicant", "election", "position"],
+                name="unique_candidate_application",
+            ),
+        ]
+
+    def clean(self):
+        """
+        Ensures the application references a valid voter
+        and that the position belongs to the selected election.
+        """
+
+        if self.applicant_id:
+            applicant = self.applicant
+
+            if applicant.role != applicant.Role.VOTER:
+                raise ValidationError(
+                    {
+                        "applicant": (
+                            "Only voters can submit "
+                            "candidate applications."
+                        )
+                    }
+                )
+
+        if (
+            self.position_id
+            and self.election_id
+            and self.position.election_id != self.election_id
+        ):
+            raise ValidationError(
+                {
+                    "position": (
+                        "The selected position does not "
+                        "belong to the selected election."
+                    )
+                }
+            )
+
+    def __str__(self):
+        return (
+            f"{self.applicant.username} - "
+            f"{self.position.title} - "
+            f"{self.status}"
+        )
+

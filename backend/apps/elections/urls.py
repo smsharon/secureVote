@@ -1,8 +1,10 @@
 from django.urls import path
 
 from apps.elections.views import (
+    CandidateApplicationListCreateView,
     CandidateListCreateView,
     ElectionListCreateView,
+    MyCandidateApplicationsView,
     PositionListCreateView,
 )
 
@@ -21,5 +23,16 @@ urlpatterns = [
         "candidates/",
         CandidateListCreateView.as_view(),
         name="candidate-list-create",
+    ),
+
+    path(
+    "candidate-applications/",
+    CandidateApplicationListCreateView.as_view(),
+    name="candidate-application-list-create",
+    ),
+    path(
+        "candidate-applications/my/",
+        MyCandidateApplicationsView.as_view(),
+        name="my-candidate-applications",
     ),
 ]

@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from apps.elections.models import Candidate, Election, Position
+from apps.elections.models import Candidate, CandidateApplication, Election, Position
 from apps.elections.validators import validate_election_dates
 
 User = get_user_model()
@@ -128,10 +128,79 @@ class CandidateSerializer(serializers.ModelSerializer):
             )
 
         return attrs
-    
+
+class CandidateApplicationSerializer(
+serializers.ModelSerializer
+):
+    """
+    Serializer for voter candidacy applications.
+    """
 
 
+    applicant = serializers.StringRelatedField(
+        read_only=True,
+    )
 
+    status = serializers.CharField(
+        read_only=True,
+    )
 
+    rejection_reason = serializers.CharField(
+        read_only=True,
+    )
 
+    reviewed_at = serializers.DateTimeField(
+        read_only=True,
+    )
 
+    reviewed_by = serializers.StringRelatedField(
+        read_only=True,
+    )
+
+    class Meta:
+        model = CandidateApplication
+
+        fields = [
+            "id",
+            "applicant",
+            "election",
+            "position",
+            "manifesto",
+            "image",
+            "status",
+            "rejection_reason",
+            "submitted_at",
+            "reviewed_at",
+            "reviewed_by",
+        ]
+
+        read_only_fields = [
+            "id",
+            "applicant",
+            "status",
+            "rejection_reason",
+            "submitted_at",
+            "reviewed_at",
+            "reviewed_by",
+        ]
+
+    def validate(self, attrs):
+        """
+        Validates that the selected position belongs
+        to the selected election.
+        """
+
+        election = attrs.get("election")
+        position = attrs.get("position")
+
+        if position.election_id != election.id:
+            raise serializers.ValidationError(
+                {
+                    "position": (
+                        "The selected position does not "
+                        "belong to the selected election."
+                    )
+                }
+            )
+
+        return attrs
