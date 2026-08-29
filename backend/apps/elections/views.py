@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from apps.elections.models import Candidate, CandidateApplication, Election, Position
 from apps.elections.serializers import (
+    AdminCandidateApplicationSerializer,
     CandidateSerializer,
     CandidateApplicationSerializer,
     ElectionSerializer,
@@ -181,6 +182,41 @@ class MyCandidateApplicationsView(
         ).filter(
             applicant=self.request.user,
         )
+    
+class AdminCandidateApplicationListView(
+    generics.ListAPIView
+    ):
+    """
+    Allows administrators to review candidate
+    applications.
+    """
+
+    serializer_class = AdminCandidateApplicationSerializer
+
+    permission_classes = [IsAdminUserRole]
+
+    def get_queryset(self):
+        """
+        Returns candidate applications for admin review.
+        """
+
+        queryset = CandidateApplication.objects.select_related(
+            "applicant",
+            "election",
+            "position",
+            "reviewed_by",
+        )
+
+        status_filter = self.request.query_params.get(
+            "status"
+        )
+
+        if status_filter:
+            queryset = queryset.filter(
+                status=status_filter
+            )
+
+        return queryset
     
 
 

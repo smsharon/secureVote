@@ -130,8 +130,8 @@ class CandidateSerializer(serializers.ModelSerializer):
         return attrs
 
 class CandidateApplicationSerializer(
-serializers.ModelSerializer
-):
+    serializers.ModelSerializer
+    ):
     """
     Serializer for voter candidacy applications.
     """
@@ -204,3 +204,47 @@ serializers.ModelSerializer
             )
 
         return attrs
+
+class AdminCandidateApplicationSerializer(
+    serializers.ModelSerializer
+    ):
+    """
+    Serializer used by administrators to review
+    candidate applications.
+    """
+
+    applicant = serializers.StringRelatedField(
+        read_only=True,
+    )
+
+    election = serializers.StringRelatedField(
+        read_only=True,
+    )
+
+    position = serializers.StringRelatedField(
+        read_only=True,
+    )
+
+    reviewed_by = serializers.StringRelatedField(
+        read_only=True,
+    )
+
+    class Meta:
+        model = CandidateApplication
+
+        fields = [
+            "id",
+            "applicant",
+            "election",
+            "position",
+            "manifesto",
+            "image",
+            "status",
+            "rejection_reason",
+            "submitted_at",
+            "reviewed_at",
+            "reviewed_by",
+        ]
+
+        read_only_fields = fields
+   

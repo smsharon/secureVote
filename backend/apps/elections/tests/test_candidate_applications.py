@@ -162,3 +162,94 @@ position,
     assert len(data) == 1
     assert data[0]["applicant"] == voter_user.username
 
+@pytest.mark.django_db
+def test_admin_can_view_candidate_applications(
+admin_user,
+voter_user,
+election,
+position,
+):
+    CandidateApplication.objects.create(
+    applicant=voter_user,
+    election=election,
+    position=position,
+    manifesto="My campaign manifesto.",
+    )
+
+
+    client = APIClient()
+
+    client.force_authenticate(
+        user=admin_user,
+    )
+
+    response = client.get(
+        "/api/v1/elections/candidate-applications/admin/"
+    )
+
+    assert response.status_code == 200
+
+    data = response.data
+
+    if isinstance(data, dict):
+        data = data["results"]
+
+    assert len(data) == 1
+    assert data[0]["applicant"] == voter_user.username
+    assert data[0]["status"] == "PENDING"
+
+
+@pytest.mark.django_db
+def test_voter_cannot_view_admin_candidate_applications(
+voter_user,
+):
+    client = APIClient()
+
+
+    client.force_authenticate(
+        user=voter_user,
+    )
+
+    response = client.get(
+        "/api/v1/elections/candidate-applications/admin/"
+    )
+
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_admin_can_filter_pending_applications(
+admin_user,
+voter_user,
+election,
+position,
+):
+    CandidateApplication.objects.create(
+    applicant=voter_user,
+    election=election,
+    position=position,
+    manifesto="Pending manifesto.",
+    )
+
+
+    client = APIClient()
+
+    client.force_authenticate(
+        user=admin_user,
+    )
+
+    response = client.get(
+        "/api/v1/elections/candidate-applications/admin/"
+        "?status=PENDING"
+    )
+
+    assert response.status_code == 200
+
+    data = response.data
+
+    if isinstance(data, dict):
+        data = data["results"]
+
+    assert len(data) == 1
+    assert data[0]["status"] == "PENDING"
+
