@@ -3,6 +3,7 @@ import pytest
 from rest_framework.test import APIClient
 
 from apps.elections.models import (
+    Candidate,
     CandidateApplication,
     Election,
     Position,
@@ -253,3 +254,173 @@ position,
     assert len(data) == 1
     assert data[0]["status"] == "PENDING"
 
+@pytest.mark.django_db
+def test_admin_can_approve_application(
+admin_user,
+voter_user,
+election,
+position,
+):
+    application = CandidateApplication.objects.create(
+    applicant=voter_user,
+    election=election,
+    position=position,
+    manifesto="My approved manifesto.",
+    )
+
+    client = APIClient()
+
+    client.force_authenticate(
+        user=admin_user,
+    )
+
+    response = client.post(
+        f"/api/v1/elections/candidate-applications/"
+        f"{application.id}/approve/",
+    )
+
+    assert response.status_code == 200
+
+    application.refresh_from_db()
+
+    assert application.status == (
+        CandidateApplication.Status.APPROVED
+    )
+
+    assert application.reviewed_by == admin_user
+    assert application.reviewed_at is not None
+
+    candidate = Candidate.objects.get(
+        user=voter_user,
+        position=position,
+    )
+
+    assert candidate.election == election
+    assert candidate.manifesto == (
+        "My approved manifesto."
+    )
+
+@pytest.mark.django_db
+def test_voter_cannot_approve_application(
+voter_user,
+election,
+position,
+):
+    application = CandidateApplication.objects.create(
+    applicant=voter_user,
+    election=election,
+    position=position,
+    manifesto="My manifesto.",
+    )
+
+    client = APIClient()
+
+    client.force_authenticate(
+        user=voter_user,
+    )
+
+    response = client.post(
+        f"/api/v1/elections/candidate-applications/"
+        f"{application.id}/approve/",
+    )
+
+    assert response.status_code == 403
+
+    application.refresh_from_db()
+
+    assert application.status == (
+        CandidateApplication.Status.PENDING
+    )
+
+    assert not Candidate.objects.filter(
+        user=voter_user,
+        position=position,
+    ).exists()
+
+@pytest.mark.django_db
+def test_admin_can_reject_application(
+admin_user,
+voter_user,
+election,
+position,
+):
+    application = CandidateApplication.objects.create(
+    applicant=voter_user,
+    election=election,
+    position=position,
+    manifesto="My manifesto.",
+    )
+
+    client = APIClient()
+
+    client.force_authenticate(
+        user=admin_user,
+    )
+
+    response = client.post(
+        f"/api/v1/elections/candidate-applications/"
+        f"{application.id}/reject/",
+        {
+            "rejection_reason": (
+                "Please provide more information."
+            )
+        },
+        format="json",
+    )
+
+    assert response.status_code == 200
+
+    application.refresh_from_db()
+
+    assert application.status == (
+        CandidateApplication.Status.REJECTED
+    )
+
+    assert application.rejection_reason == (
+        "Please provide more information."
+    )
+
+    assert application.reviewed_by == admin_user
+    assert application.reviewed_at is not None
+
+    assert not Candidate.objects.filter(
+        user=voter_user,
+        position=position,
+    ).exists()
+
+@pytest.mark.django_db
+def test_rejection_requires_reason(
+admin_user,
+voter_user,
+election,
+position,
+):
+    application = CandidateApplication.objects.create(
+    applicant=voter_user,
+    election=election,
+    position=position,
+    manifesto="My manifesto.",
+    )
+
+    client = APIClient()
+
+    client.force_authenticate(
+        user=admin_user,
+    )
+
+    response = client.post(
+        f"/api/v1/elections/candidate-applications/"
+        f"{application.id}/reject/",
+        {
+            "rejection_reason": "",
+        },
+        format="json",
+    )
+
+    assert response.status_code == 400
+
+    application.refresh_from_db()
+
+    assert application.status == (
+        CandidateApplication.Status.PENDING
+    )

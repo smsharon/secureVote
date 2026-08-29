@@ -248,3 +248,16 @@ class AdminCandidateApplicationSerializer(
 
         read_only_fields = fields
    
+class CandidateApplicationRejectionSerializer(
+    serializers.Serializer
+    ):
+    """
+    Serializer for rejecting a candidate application.
+    """
+
+    rejection_reason = serializers.CharField(
+        required=True,
+        allow_blank=False,
+        max_length=2000,
+    )
+    

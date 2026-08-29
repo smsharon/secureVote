@@ -2,11 +2,13 @@ from django.urls import path
 
 from apps.elections.views import (
     AdminCandidateApplicationListView,
+    ApproveCandidateApplicationView,
     CandidateApplicationListCreateView,
     CandidateListCreateView,
     ElectionListCreateView,
     MyCandidateApplicationsView,
     PositionListCreateView,
+    RejectCandidateApplicationView,
 )
 
 urlpatterns = [
@@ -27,9 +29,9 @@ urlpatterns = [
     ),
 
     path(
-    "candidate-applications/",
-    CandidateApplicationListCreateView.as_view(),
-    name="candidate-application-list-create",
+        "candidate-applications/",
+        CandidateApplicationListCreateView.as_view(),
+        name="candidate-application-list-create",
     ),
     path(
         "candidate-applications/my/",
@@ -38,9 +40,20 @@ urlpatterns = [
     ),
 
     path(
-    "candidate-applications/admin/",
-    AdminCandidateApplicationListView.as_view(),
-    name="admin-candidate-application-list",
+        "candidate-applications/admin/",
+        AdminCandidateApplicationListView.as_view(),
+        name="admin-candidate-application-list",
+    ),
+
+    path(
+        "candidate-applications/<int:pk>/approve/",
+        ApproveCandidateApplicationView.as_view(),
+        name="candidate-application-approve",
+    ),
+    path(
+        "candidate-applications/<int:pk>/reject/",
+        RejectCandidateApplicationView.as_view(),
+        name="candidate-application-reject",
     ),
 
 ]

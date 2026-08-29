@@ -3,14 +3,23 @@ from django.utils.decorators import method_decorator
 from django_ratelimit.decorators import ratelimit
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 
 from apps.elections.models import Candidate, CandidateApplication, Election, Position
 from apps.elections.serializers import (
     AdminCandidateApplicationSerializer,
-    CandidateSerializer,
+    CandidateApplicationRejectionSerializer,
     CandidateApplicationSerializer,
+    CandidateSerializer,
     ElectionSerializer,
     PositionSerializer,
+)
+
+from apps.elections.services import (
+    CandidateApplicationService,
 )
 from apps.users.permissions import IsAdminUserRole
 
@@ -217,6 +226,106 @@ class AdminCandidateApplicationListView(
             )
 
         return queryset
+    
+class ApproveCandidateApplicationView(APIView):
+    """
+    Allows an administrator to approve a pending
+    candidate application.
+    """
+
+    permission_classes = [IsAdminUserRole]
+
+    def post(self, request, pk):
+        try:
+            application = CandidateApplication.objects.select_related(
+                "applicant",
+                "election",
+                "position",
+            ).get(pk=pk)
+
+        except CandidateApplication.DoesNotExist:
+            return Response(
+                {"detail": "Application not found."},
+                status=404,
+            )
+
+        try:
+            candidate = CandidateApplicationService.approve_application(
+                application=application,
+                admin_user=request.user,
+            )
+
+        except ValidationError as exc:
+            return Response(
+                {"detail": str(exc.detail)},
+                status=400,
+            )
+
+        return Response(
+            {
+                "detail": (
+                    "Candidate application approved "
+                    "successfully."
+                ),
+                "candidate_id": candidate.id,
+            },
+            status=200,
+        )
+
+class RejectCandidateApplicationView(APIView):
+    """
+    Allows an administrator to reject a pending
+    candidate application.
+    """
+
+    permission_classes = [IsAdminUserRole]
+
+    def post(self, request, pk):
+        try:
+            application = CandidateApplication.objects.select_related(
+                "applicant",
+                "election",
+                "position",
+            ).get(pk=pk)
+
+        except CandidateApplication.DoesNotExist:
+            return Response(
+                {"detail": "Application not found."},
+                status=404,
+            )
+
+        serializer = CandidateApplicationRejectionSerializer(
+            data=request.data,
+        )
+
+        serializer.is_valid(
+            raise_exception=True,
+        )
+
+        try:
+            CandidateApplicationService.reject_application(
+                application=application,
+                admin_user=request.user,
+                rejection_reason=serializer.validated_data[
+                    "rejection_reason"
+                ],
+            )
+
+        except ValidationError as exc:
+            return Response(
+                {"detail": str(exc.detail)},
+                status=400,
+            )
+
+        return Response(
+            {
+                "detail": (
+                    "Candidate application rejected "
+                    "successfully."
+                )
+            },
+            status=200,
+        )
     
 
 
