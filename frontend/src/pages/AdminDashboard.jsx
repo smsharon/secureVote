@@ -22,6 +22,10 @@ return ( <section> <h1>Admin Dashboard</h1>
   <Link to="/admin/elections">
     Manage Elections
   </Link>
+
+  <Link to="/admin/candidate-applications">
+    Candidate Applications
+  </Link>
 </section>
 
 
