@@ -67,6 +67,22 @@ class Election(models.Model):
 
         return self.start_date <= now <= self.end_date
 
+    @property
+    def current_status(self):
+        """
+        Returns the election status based on the current time.
+        """
+
+        now = timezone.now()
+
+        if now < self.start_date:
+            return self.Status.UPCOMING
+
+        if now > self.end_date:
+            return self.Status.COMPLETED
+
+        return self.Status.ONGOING    
+
 
 class Position(models.Model):
     """

@@ -15,6 +15,11 @@ class ElectionSerializer(serializers.ModelSerializer):
         read_only=True,
     )
 
+    status = serializers.CharField(
+        source="current_status",
+        read_only=True,
+    )
+
     class Meta:
         model = Election
 
