@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import apiClient from "../api/axios";
 
 function AdminCandidateApplications() {
@@ -11,7 +11,7 @@ function AdminCandidateApplications() {
 
   const [rejectionReasons, setRejectionReasons] = useState({});
 
-  const loadApplications = async () => {
+  const loadApplications = useCallback(async () => {
     setLoading(true);
     setError("");
 
@@ -31,11 +31,23 @@ function AdminCandidateApplications() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [statusFilter]);
 
   useEffect(() => {
-    loadApplications();
-  }, [statusFilter]);
+    let cancelled = false;
+
+    // Schedule the loader to run asynchronously so it doesn't call
+    // setState synchronously inside the effect body.
+    Promise.resolve().then(() => {
+      if (!cancelled) {
+        loadApplications();
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [loadApplications]);
 
   const handleApprove = async (applicationId) => {
     setActionLoading(applicationId);

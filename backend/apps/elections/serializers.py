@@ -157,6 +157,16 @@ class CandidateApplicationSerializer(
         read_only=True,
     )
 
+    election_id = serializers.IntegerField(
+        source="election.id",
+        read_only=True,
+    )
+
+    position_id = serializers.IntegerField(
+        source="position.id",
+        read_only=True,
+    )
+
     class Meta:
         model = CandidateApplication
 
@@ -164,7 +174,9 @@ class CandidateApplicationSerializer(
             "id",
             "applicant",
             "election",
+            "election_id",
             "position",
+            "position_id",
             "manifesto",
             "image",
             "status",
@@ -202,8 +214,27 @@ class CandidateApplicationSerializer(
                     )
                 }
             )
+        existing_application = CandidateApplication.objects.filter(
+            applicant=self.context["request"].user,
+            election=election,
+            position=position,
+            status__in=[
+                CandidateApplication.Status.PENDING,
+                CandidateApplication.Status.APPROVED,
+            ],
+        ).exists()
 
+        if existing_application:
+            raise serializers.ValidationError(
+                {
+                    "position": (
+                        "You already have an active candidate "
+                        "application for this position."
+                    )
+                }
+            )
         return attrs
+
 
 class AdminCandidateApplicationSerializer(
     serializers.ModelSerializer

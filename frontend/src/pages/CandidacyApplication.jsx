@@ -91,6 +91,28 @@ loadPositions();
 
 }, [selectedElection]);
 
+const handleResubmit = (application) => {
+  setError("");
+  setSuccess("");
+
+  setSelectedElection(
+    String(application.election_id || application.election),
+  );
+
+  setSelectedPosition(
+    String(application.position_id || application.position),
+  );
+
+  setManifesto(application.manifesto || "");
+
+  setImage(null);
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
+
 const handleSubmit = async (event) => {
 event.preventDefault();
 
@@ -333,16 +355,25 @@ return ( <div> <h1>Run for a Position</h1>
             {application.status}
           </p>
 
-          {application.status ===
-            "REJECTED" &&
-            application.rejection_reason && (
-              <p>
-                <strong>
-                  Reason:
-                </strong>{" "}
-                {application.rejection_reason}
-              </p>
-            )}
+          {application.status === "REJECTED" && (
+            <div>
+              {application.rejection_reason && (
+                <p>
+                  <strong>Reason:</strong>{" "}
+                  {application.rejection_reason}
+                </p>
+              )}
+
+              <button
+                type="button"
+                onClick={() =>
+                  handleResubmit(application)
+                }
+              >
+                Resubmit Application
+              </button>
+            </div>
+          )}
         </article>
       ))
     )}

@@ -34,8 +34,14 @@ class CandidateApplicationService:
         admin_user,
     ):
         """
-        Approves a pending application and creates
-        the official Candidate record.
+        Approves a pending application.
+
+        Creates a new Candidate when the applicant is
+        contesting the position for the first time.
+
+        If a Candidate already exists, updates that
+        candidate using the resubmitted application's
+        manifesto and image.
         """
 
         if application.status != CandidateApplication.Status.PENDING:
@@ -43,7 +49,6 @@ class CandidateApplicationService:
                 "Only pending applications can be approved."
             )
 
-        # Prevent duplicate candidate creation.
         candidate, created = Candidate.objects.get_or_create(
             position=application.position,
             user=application.applicant,
@@ -55,9 +60,18 @@ class CandidateApplicationService:
         )
 
         if not created:
-            raise ValidationError(
-                "A candidate already exists for this applicant "
-                "and position."
+            candidate.election = application.election
+            candidate.manifesto = application.manifesto
+
+            if application.image:
+                candidate.image = application.image
+
+            candidate.save(
+                update_fields=[
+                    "election",
+                    "manifesto",
+                    "image",
+                ]
             )
 
         application.status = (

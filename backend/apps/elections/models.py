@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 
@@ -263,8 +264,18 @@ class CandidateApplication(models.Model):
 
         constraints = [
             models.UniqueConstraint(
-                fields=["applicant", "election", "position"],
-                name="unique_candidate_application",
+                fields=[
+                    "applicant",
+                    "election",
+                    "position",
+                ],
+                condition=Q(
+                    status__in=[
+                        "PENDING",
+                        "APPROVED",
+                    ]
+                ),
+                name="unique_active_candidate_application",
             ),
         ]
 
