@@ -204,7 +204,8 @@ class CandidateApplicationSerializer(
     def validate(self, attrs):
         """
         Validates that the selected position belongs
-        to the selected election.
+        to the selected election and that the election
+        is still accepting candidate applications.
         """
 
         election = attrs.get("election")
@@ -219,15 +220,28 @@ class CandidateApplicationSerializer(
                     )
                 }
             )
-        existing_application = CandidateApplication.objects.filter(
-            applicant=self.context["request"].user,
-            election=election,
-            position=position,
-            status__in=[
-                CandidateApplication.Status.PENDING,
-                CandidateApplication.Status.APPROVED,
-            ],
-        ).exists()
+
+        if election.current_status == Election.Status.COMPLETED:
+            raise serializers.ValidationError(
+                {
+                    "election": (
+                        "Candidate applications are closed "
+                        "for this election."
+                    )
+                }
+            )
+
+        existing_application = (
+            CandidateApplication.objects.filter(
+                applicant=self.context["request"].user,
+                election=election,
+                position=position,
+                status__in=[
+                    CandidateApplication.Status.PENDING,
+                    CandidateApplication.Status.APPROVED,
+                ],
+            ).exists()
+        )
 
         if existing_application:
             raise serializers.ValidationError(
@@ -238,6 +252,7 @@ class CandidateApplicationSerializer(
                     )
                 }
             )
+
         return attrs
 
 
