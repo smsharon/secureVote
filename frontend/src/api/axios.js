@@ -15,16 +15,23 @@ const apiClient = axios.create({
  */
 apiClient.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem("access_token");
+  const accessToken = localStorage.getItem("access_token");
 
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
+  }
 
-    return config;
+  if (config.data instanceof FormData) {
+    delete config.headers["Content-Type"];
+  }
+
+  return config;
+
+
   },
   (error) => Promise.reject(error),
 );
+
 
 /**
  * Handles expired access tokens by requesting a new access token

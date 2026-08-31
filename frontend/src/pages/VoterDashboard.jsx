@@ -37,6 +37,16 @@ return ( <section> <h1>Voter Dashboard</h1>
     <Link to="/profile">
       My Profile
     </Link>
+
+    
+  </div>
+
+  <div>
+    <Link to="/candidacy">
+        Run for a Position
+    </Link>
+
+    
   </div>
 </section>
 
