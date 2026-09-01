@@ -7,8 +7,24 @@ from apps.votes.services import VoteService
 class VoteSerializer(serializers.ModelSerializer):
     """
     Serializer responsible for validating
-    secure vote submissions.
+    secure vote submissions and displaying
+    human-readable voting history.
     """
+
+    election_title = serializers.CharField(
+        source="election.title",
+        read_only=True,
+    )
+
+    position_title = serializers.CharField(
+        source="position.title",
+        read_only=True,
+    )
+
+    candidate_name = serializers.CharField(
+        source="candidate.user.username",
+        read_only=True,
+    )
 
     class Meta:
         model = Vote
@@ -16,13 +32,19 @@ class VoteSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "election",
+            "election_title",
             "position",
+            "position_title",
             "candidate",
+            "candidate_name",
             "created_at",
         ]
 
         read_only_fields = [
             "id",
+            "election_title",
+            "position_title",
+            "candidate_name",
             "created_at",
         ]
 
@@ -45,7 +67,11 @@ class VoteSerializer(serializers.ModelSerializer):
 
         if not election.is_active:
             raise serializers.ValidationError(
-                {"election": "This election is not active."}
+                {
+                    "election": (
+                        "This election is not active."
+                    )
+                }
             )
 
         # =================================================
@@ -54,7 +80,12 @@ class VoteSerializer(serializers.ModelSerializer):
 
         if position.election_id != election.id:
             raise serializers.ValidationError(
-                {"position": "Position does not belong to this election."}
+                {
+                    "position": (
+                        "Position does not belong "
+                        "to this election."
+                    )
+                }
             )
 
         # =================================================
@@ -63,7 +94,12 @@ class VoteSerializer(serializers.ModelSerializer):
 
         if candidate.position_id != position.id:
             raise serializers.ValidationError(
-                {"candidate": "Candidate does not belong to this position."}
+                {
+                    "candidate": (
+                        "Candidate does not belong "
+                        "to this position."
+                    )
+                }
             )
 
         # =================================================
@@ -72,7 +108,12 @@ class VoteSerializer(serializers.ModelSerializer):
 
         if candidate.election_id != election.id:
             raise serializers.ValidationError(
-                {"candidate": "Candidate does not belong to this election."}
+                {
+                    "candidate": (
+                        "Candidate does not belong "
+                        "to this election."
+                    )
+                }
             )
 
         # =================================================
@@ -87,7 +128,12 @@ class VoteSerializer(serializers.ModelSerializer):
 
         if already_voted:
             raise serializers.ValidationError(
-                {"vote": "You have already voted for this position."}
+                {
+                    "vote": (
+                        "You have already voted "
+                        "for this position."
+                    )
+                }
             )
 
         return attrs
@@ -103,6 +149,7 @@ class VoteSerializer(serializers.ModelSerializer):
             validated_data=validated_data,
             voter=request.user,
         )
+
 
 
 class CandidateResultSerializer(serializers.Serializer):

@@ -94,31 +94,32 @@ function MyVotes() {
 
           {votes.map((vote) => (
             <article key={vote.id}>
-              <h3>
-                {vote.election}
-              </h3>
+            <h3>
+                {vote.election_title}
+            </h3>
 
-              <p>
+            <p>
                 <strong>Position:</strong>{" "}
-                {vote.position}
-              </p>
+                {vote.position_title}
+            </p>
 
-              <p>
+            <p>
                 <strong>Candidate:</strong>{" "}
-                {vote.candidate}
-              </p>
+                {vote.candidate_name}
+            </p>
 
-              <p>
+            <p>
                 <strong>Voted at:</strong>{" "}
                 {new Date(
-                  vote.created_at,
+                vote.created_at,
                 ).toLocaleString("en-KE", {
-                  timeZone: "Africa/Nairobi",
+                timeZone: "Africa/Nairobi",
                 })}
-              </p>
+            </p>
 
-              <hr />
+            <hr />
             </article>
+
           ))}
         </section>
       )}
