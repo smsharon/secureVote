@@ -198,6 +198,19 @@ const loadElectionData = useCallback(async () => {
   const electionIsActive =
     election.status === "ONGOING";
 
+  const totalPositions = positions.length;
+
+  const votedPositionCount = positions.filter(
+    (position) => votedPositions[position.id],
+  ).length;
+
+  const hasStartedVoting =
+    votedPositionCount > 0;
+
+  const hasCompletedVoting =
+    totalPositions > 0 &&
+    votedPositionCount === totalPositions;
+
   return (
     <main>
       <Link to="/elections">
@@ -213,6 +226,28 @@ const loadElectionData = useCallback(async () => {
         {election.status}
       </p>
 
+      {electionIsActive && totalPositions > 0 && (
+        <section>
+          <h2>Your Voting Progress</h2>
+
+          {hasCompletedVoting ? (
+            <p role="status">
+              ✓ You have voted in all positions.
+            </p>
+          ) : hasStartedVoting ? (
+            <p role="status">
+              Voting in progress: {votedPositionCount} of{" "}
+              {totalPositions} positions completed.
+            </p>
+          ) : (
+            <p>
+              You have not voted yet. Select a candidate
+              for each position below.
+            </p>
+          )}
+        </section>
+      )}
+
       {election.status === "UPCOMING" && (
         <p>
           Voting has not started yet.
@@ -220,9 +255,18 @@ const loadElectionData = useCallback(async () => {
       )}
 
       {election.status === "COMPLETED" && (
-        <p>
-          Voting for this election has ended.
-        </p>
+        <section>
+          <h2>Voting Complete</h2>
+
+          <p>
+            Voting for this election has ended.
+          </p>
+
+          <p>
+            You voted in {votedPositionCount} of{" "}
+            {totalPositions} positions.
+          </p>
+        </section>
       )}
 
       {error && (
@@ -378,8 +422,7 @@ const loadElectionData = useCallback(async () => {
 
                 {hasVoted && (
                   <p role="status">
-                    ✓ You have already voted for
-                    this position.
+                    ✓ You have already voted in this position.
                   </p>
                 )}
 
