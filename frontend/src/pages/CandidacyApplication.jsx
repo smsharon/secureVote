@@ -16,6 +16,12 @@ const [image, setImage] = useState(null);
 
 const [applications, setApplications] = useState([]);
 
+const availableElections = elections.filter(
+  (election) =>
+    election.status === "UPCOMING" ||
+    election.status === "ONGOING",
+);
+
 const [loading, setLoading] = useState(true);
 const [submitting, setSubmitting] = useState(false);
 const [error, setError] = useState("");
@@ -242,15 +248,26 @@ return ( <div> <h1>Run for a Position</h1>
         }
       >
         <option value="">
-          Select an election
+          {availableElections.length === 0
+            ? "No elections accepting applications"
+            : "Select an election"}
         </option>
 
-        {elections.map((election) => (
+        <select
+            id="election"
+            value={selectedElection}
+            onChange={(event) =>
+              setSelectedElection(event.target.value)
+            }
+            disabled={availableElections.length === 0}
+          ></select>
+
+        {availableElections.map((election) => (
           <option
             key={election.id}
             value={election.id}
           >
-            {election.title}
+            {election.title} ({election.status})
           </option>
         ))}
       </select>
