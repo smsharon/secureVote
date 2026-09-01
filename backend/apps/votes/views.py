@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 
 from apps.common.responses import success_response
 from apps.elections.models import Election
-from apps.users.permissions import IsVerifiedUser, IsVoterRole
+from apps.users.permissions import IsAdminUserRole, IsVerifiedUser, IsVoterRole
 from apps.votes.models import Vote
 from apps.votes.serializers import VoteSerializer
 from apps.votes.services import ResultService
@@ -148,6 +148,7 @@ class ElectionStatisticsView(APIView):
     """
     Returns election analytics and statistics.
     """
+    permission_classes = [IsAdminUserRole]
 
     def get(self, request, election_id):
         """

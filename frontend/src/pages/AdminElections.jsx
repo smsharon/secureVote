@@ -304,6 +304,15 @@ function AdminElections() {
                   Manage Positions
                 </Link>
               </div>
+
+              <div>
+                <Link
+                  to={`/admin/elections/${election.id}/results`}
+                >
+                  View Results & Statistics
+                </Link>
+              </div>
+
             </article>
           ))}
         </div>

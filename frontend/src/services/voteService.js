@@ -40,10 +40,28 @@ const getElectionWinners = async (electionId) => {
   return response.data;
 };
 
+// Consolidated service export (defined once below).
+
+/**
+ * Retrieves administrative statistics for an election.
+ *
+ * @param {string|number} electionId - Election ID.
+ * @returns {Promise<Object>} Election statistics.
+ */
+const getElectionStatistics = async (electionId) => {
+  const response = await apiClient.get(
+    `/votes/statistics/${electionId}/`,
+  );
+
+  return response.data;
+};
+
+
 const voteService = {
   getMyVotes,
   getElectionResults,
   getElectionWinners,
+  getElectionStatistics,
 };
 
 export default voteService;
