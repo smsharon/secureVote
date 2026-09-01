@@ -174,3 +174,52 @@ class CandidateUserListView(generics.ListAPIView):
             role=User.Role.VOTER,
         ).order_by("username")
     
+class AdminVoterListView(generics.ListAPIView):
+    """
+    Allows administrators to view registered voters.
+    """
+
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminUserRole]
+
+    def get_queryset(self):
+        return User.objects.filter(
+            role=User.Role.VOTER,
+        ).order_by("username")
+
+
+class VerifyVoterView(APIView):
+    """
+    Allows administrators to verify a voter.
+    """
+
+    permission_classes = [IsAdminUserRole]
+
+    def post(self, request, pk):
+        try:
+            voter = User.objects.get(
+                pk=pk,
+                role=User.Role.VOTER,
+            )
+        except User.DoesNotExist:
+            return Response(
+                {"detail": "Voter not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if voter.is_verified:
+            return Response(
+                {"detail": "Voter is already verified."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        voter.is_verified = True
+        voter.save(update_fields=["is_verified"])
+
+        return Response(
+            {
+                "detail": "Voter verified successfully.",
+                "voter": voter.username,
+            },
+            status=status.HTTP_200_OK,
+        )

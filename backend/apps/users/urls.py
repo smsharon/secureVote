@@ -2,6 +2,7 @@ from django.urls import path
 
 from apps.users.views import (
     AdminDashboardView,
+    AdminVoterListView,
     CandidateUserListView,
     CurrentUserView,
     LoginView,
@@ -9,6 +10,7 @@ from apps.users.views import (
     RefreshTokenView,
     UserRegistrationView,
     VerifiedVoterView,
+    VerifyVoterView,
 )
 
 urlpatterns = [
@@ -41,6 +43,18 @@ urlpatterns = [
         AdminDashboardView.as_view(),
         name="admin-dashboard",
     ),
+
+    path(
+        "admin-voters/",
+        AdminVoterListView.as_view(),
+        name="admin-voters",
+    ),
+    path(
+        "admin-voters/<int:pk>/verify/",
+        VerifyVoterView.as_view(),
+        name="verify-voter",
+    ),
+    
     path(
         "verified-voter/",
         VerifiedVoterView.as_view(),

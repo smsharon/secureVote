@@ -19,13 +19,19 @@ return ( <section> <h1>Admin Dashboard</h1>
     You have administrator access to SecureVote.
   </p>
 
-  <Link to="/admin/elections">
-    Manage Elections
-  </Link>
+  <div>
+    <Link to="/admin/elections">
+      Manage Elections
+    </Link>
 
-  <Link to="/admin/candidate-applications">
-    Candidate Applications
-  </Link>
+    <Link to="/admin/candidate-applications">
+      Candidate Applications
+    </Link>
+
+    <Link to="/admin/voters">
+      Manage Voters
+    </Link>
+  </div>
 </section>
 
 

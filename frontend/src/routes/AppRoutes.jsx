@@ -20,7 +20,8 @@ import AdminPositions from "../pages/AdminPositions";
 import AdminCandidates from "../pages/AdminCandidates";
 import CandidacyApplication from "../pages/CandidacyApplication";
 import AdminCandidateApplications from "../pages/AdminCandidateApplications";
-
+import MyVotes from "../pages/MyVotes";
+import AdminVoters from "../pages/AdminVoters";
 function AppRoutes() {
 return ( <BrowserRouter> <Routes>
 {/* =========================
@@ -100,6 +101,11 @@ PUBLIC ROUTES
             path="/admin/candidate-applications"
             element={<AdminCandidateApplications />}
           />
+
+          <Route
+            path="/admin/voters"
+            element={<AdminVoters />}
+          />
         </Route>
         
 
@@ -109,18 +115,9 @@ PUBLIC ROUTES
           element={<Elections />}
         />
 
-        
-
         <Route
           path="/my-votes"
-          element={
-            <div>
-              <h1>My Votes</h1>
-              <p>
-                Your voting history will appear here.
-              </p>
-            </div>
-          }
+          element={<MyVotes />}
         />
 
         <Route
