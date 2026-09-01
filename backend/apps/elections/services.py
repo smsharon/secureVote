@@ -9,6 +9,47 @@ class ElectionService:
     Service layer for election business logic.
     """
 
+    ALLOWED_TRANSITIONS = {
+        Election.Status.UPCOMING: {Election.Status.ONGOING},
+        Election.Status.ONGOING: {Election.Status.COMPLETED},
+        Election.Status.COMPLETED: set(),
+    }
+
+    @staticmethod
+    def change_status(election, new_status):
+        """
+        Change the status of an election following allowed transitions.
+
+        Args:
+            election (Election): The election instance to update.
+            new_status (str): New status value (one of Election.Status.*).
+
+        Returns:
+            Election: The updated election instance.
+
+        Raises:
+            ValueError: If the transition is not allowed.
+        """
+
+        if new_status == election.status:
+            return election
+
+        allowed_statuses = ElectionService.ALLOWED_TRANSITIONS.get(
+            election.status,
+            set(),
+        )
+
+        if new_status not in allowed_statuses:
+            raise ValueError(
+                f"Invalid election status transition: "
+                f"{election.status} -> {new_status}"
+            )
+
+        election.status = new_status
+        election.save(update_fields=["status"])
+
+        return election
+
     @staticmethod
     def create_election(validated_data, user):
         """

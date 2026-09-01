@@ -24,6 +24,7 @@ import MyVotes from "../pages/MyVotes";
 import AdminVoters from "../pages/AdminVoters";
 import ElectionResults from "../pages/ElectionResults";
 import AdminElectionResults from "../pages/AdminElectionResults";
+import AdminElectionMonitor from "../pages/AdminElectionMonitor";
 
 function AppRoutes() {
 return ( <BrowserRouter> <Routes>
@@ -100,7 +101,11 @@ PUBLIC ROUTES
             path="/admin/elections/:id/positions"
             element={<AdminPositions />}
           />
-
+          
+          <Route
+            path="/admin/elections/:id/monitor"
+            element={<AdminElectionMonitor />}
+          />
           <Route
             path="/admin/elections/:id/results"
             element={<AdminElectionResults />}

@@ -311,9 +311,7 @@ function AdminElections() {
                 )}
 
                 {election.status === "ONGOING" && (
-                  <Link
-                    to={`/admin/elections/${election.id}/results`}
-                  >
+                  <Link to={`/admin/elections/${election.id}/monitor`}>
                     Monitor Election
                   </Link>
                 )}

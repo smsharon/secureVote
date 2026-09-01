@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.db.models import Count
 
-from apps.elections.models import Candidate, Election
+from apps.elections.models import Candidate, Election, Position
 from apps.votes.models import Vote
 
 
@@ -133,15 +133,24 @@ class ResultService:
 
     @staticmethod
     def get_election_statistics(election_id):
-        """
-        Returns high-level election analytics.
-        """
+        election = Election.objects.get(id=election_id)
 
-        total_votes = Vote.objects.filter(election_id=election_id).count()
+        total_votes = Vote.objects.filter(
+            election_id=election_id
+        ).count()
 
-        total_candidates = Candidate.objects.filter(election_id=election_id).count()
+        total_candidates = Candidate.objects.filter(
+            election_id=election_id
+        ).count()
+
+        total_positions = Position.objects.filter(
+            election_id=election_id
+        ).count()
 
         return {
+            "election_id": election.id,
+            "status": election.status,
             "total_votes": total_votes,
+            "total_positions": total_positions,
             "total_candidates": total_candidates,
         }

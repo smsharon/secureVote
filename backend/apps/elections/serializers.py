@@ -48,6 +48,25 @@ class ElectionSerializer(serializers.ModelSerializer):
         )
 
         return attrs
+    def validate(self, attrs):
+        instance = self.instance
+
+        if instance and instance.status != Election.UPCOMING:
+            protected_fields = {
+                "title",
+                "description",
+                "start_date",
+                "end_date",
+            }
+
+            changed_fields = protected_fields.intersection(attrs.keys())
+
+            if changed_fields:
+                raise serializers.ValidationError(
+                    "Election details cannot be changed after voting starts."
+                )
+
+        return attrs
 
 
 class PositionSerializer(serializers.ModelSerializer):
