@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import electionService from "../services/electionService";
-import apiClient from "../api/axios";
+import voteService from "../services/voteService";
 
 /**
  * Displays an election, its positions, and
@@ -24,39 +24,58 @@ function ElectionDetails() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const loadElectionData = useCallback(async () => {
-    const [
-      electionData,
-      positionsData,
-      candidatesData,
-    ] = await Promise.all([
-      electionService.getElection(id),
-      electionService.getPositions(),
-      electionService.getCandidates(),
-    ]);
+const loadElectionData = useCallback(async () => {
+  const [
+    electionData,
+    positionsData,
+    candidatesData,
+    votesData,
+  ] = await Promise.all([
+    electionService.getElection(id),
+    electionService.getPositions(),
+    electionService.getCandidates(),
+    voteService.getMyVotes(),
+  ]);
 
-    const positionList = Array.isArray(positionsData)
-      ? positionsData
-      : positionsData.results || [];
+  const positionList = Array.isArray(positionsData)
+    ? positionsData
+    : positionsData.results || [];
 
-    const candidateList = Array.isArray(candidatesData)
-      ? candidatesData
-      : candidatesData.results || [];
+  const candidateList = Array.isArray(candidatesData)
+    ? candidatesData
+    : candidatesData.results || [];
 
-    const electionPositions = positionList.filter(
-      (position) =>
-        String(position.election) === String(id),
-    );
+  const voteList = Array.isArray(votesData)
+    ? votesData
+    : votesData.results || [];
 
-    const electionCandidates = candidateList.filter(
-      (candidate) =>
-        String(candidate.election) === String(id),
-    );
+  const electionPositions = positionList.filter(
+    (position) =>
+      String(position.election) === String(id),
+  );
 
-    setElection(electionData);
-    setPositions(electionPositions);
-    setCandidates(electionCandidates);
-  }, [id]);
+  const electionCandidates = candidateList.filter(
+    (candidate) =>
+      String(candidate.election) === String(id),
+  );
+
+  const electionVotes = voteList.filter(
+    (vote) =>
+      String(vote.election) === String(id),
+  );
+
+  const existingVotes = {};
+
+  electionVotes.forEach((vote) => {
+    existingVotes[vote.position] = true;
+  });
+
+  setElection(electionData);
+  setPositions(electionPositions);
+  setCandidates(electionCandidates);
+  setVotedPositions(existingVotes);
+}, [id]);
+
 
   useEffect(() => {
     let cancelled = false;
@@ -111,7 +130,7 @@ function ElectionDetails() {
     setSubmittingPosition(position.id);
 
     try {
-      await apiClient.post("votes/", {
+      await voteService.castVote({
         election: election.id,
         position: position.id,
         candidate: candidateId,
