@@ -276,7 +276,11 @@ function AdminElections() {
 
               <p>
                 <strong>Status:</strong>{" "}
-                {election.status}
+                {election.status === "UPCOMING"
+                  ? "Upcoming"
+                  : election.status === "ONGOING"
+                    ? "Voting in Progress"
+                    : "Completed"}
               </p>
 
               <p>
@@ -298,11 +302,29 @@ function AdminElections() {
               </p>
 
               <div>
-                <Link
-                  to={`/admin/elections/${election.id}/positions`}
-                >
-                  Manage Positions
-                </Link>
+                {election.status === "UPCOMING" && (
+                  <Link
+                    to={`/admin/elections/${election.id}/positions`}
+                  >
+                    Configure Election
+                  </Link>
+                )}
+
+                {election.status === "ONGOING" && (
+                  <Link
+                    to={`/admin/elections/${election.id}/results`}
+                  >
+                    Monitor Election
+                  </Link>
+                )}
+
+                {election.status === "COMPLETED" && (
+                  <Link
+                    to={`/admin/elections/${election.id}/results`}
+                  >
+                    View Results & Statistics
+                  </Link>
+                )}
               </div>
 
               <div>
