@@ -25,6 +25,7 @@ import AdminVoters from "../pages/AdminVoters";
 import ElectionResults from "../pages/ElectionResults";
 import AdminElectionResults from "../pages/AdminElectionResults";
 import AdminElectionMonitor from "../pages/AdminElectionMonitor";
+import Profile from "../pages/Profile";
 
 function AppRoutes() {
 return ( <BrowserRouter> <Routes>
@@ -54,7 +55,8 @@ PUBLIC ROUTES
           path="/dashboard"
           element={<DashboardRedirect />}
         />
-
+         
+         <Route path="/profile" element={<Profile />} />
         {/* =========================
             VOTER ROUTES
             ========================= */}
