@@ -68,35 +68,68 @@ class ResultService:
     @staticmethod
     def get_position_winners(election_id):
         """
-        Determines winners per position.
+        Determines winner or tie per position.
         """
 
-        election = Election.objects.prefetch_related("positions").get(id=election_id)
+        election = Election.objects.prefetch_related(
+            "positions"
+        ).get(id=election_id)
 
         winners = []
 
         for position in election.positions.all():
-
-            winner = (
+            candidates = list(
                 Candidate.objects.filter(
                     election_id=election_id,
                     position=position,
                 )
+                .select_related("user")
                 .annotate(total_votes=Count("votes"))
                 .order_by("-total_votes")
-                .first()
             )
 
-            if winner:
+            if not candidates:
+                continue
+
+            highest_vote_count = candidates[0].total_votes
+
+            top_candidates = [
+                candidate
+                for candidate in candidates
+                if candidate.total_votes == highest_vote_count
+            ]
+
+            if len(top_candidates) == 1:
                 winners.append(
                     {
                         "position": position.title,
-                        "winner": winner.user.username,
-                        "total_votes": winner.total_votes,
+                        "result": "WINNER",
+                        "winner": top_candidates[0].user.username,
+                        "total_votes": highest_vote_count,
+                    }
+                )
+            else:
+                winners.append(
+                    {
+                        "position": position.title,
+                        "result": "TIE",
+                        "winner": None,
+                        "total_votes": highest_vote_count,
+                        "tied_candidates": [
+                            {
+                                "candidate_id": candidate.id,
+                                "candidate_name": (
+                                    candidate.user.username
+                                ),
+                                "total_votes": candidate.total_votes,
+                            }
+                            for candidate in top_candidates
+                        ],
                     }
                 )
 
         return winners
+
 
     @staticmethod
     def get_election_statistics(election_id):

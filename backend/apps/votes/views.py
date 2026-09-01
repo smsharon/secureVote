@@ -4,10 +4,12 @@ from drf_spectacular.utils import extend_schema
 
 # Create your views here.
 from rest_framework import generics
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.common.responses import success_response
+from apps.elections.models import Election
 from apps.users.permissions import IsVerifiedUser, IsVoterRole
 from apps.votes.models import Vote
 from apps.votes.serializers import VoteSerializer
@@ -66,15 +68,41 @@ class ElectionResultsView(APIView):
 
     def get(self, request, election_id):
         """
-        Returns election result statistics.
+        Returns election results only after
+        the election has completed.
         """
 
-        results = ResultService.get_election_results(election_id)
+        try:
+            election = Election.objects.get(
+                id=election_id
+            )
+        except Election.DoesNotExist:
+            return Response(
+                {"detail": "Election not found."},
+                status=404,
+            )
+
+        if election.status != Election.Status.COMPLETED:
+            return Response(
+                {
+                    "detail": (
+                        "Election results are only "
+                        "available after the election "
+                        "has completed."
+                    )
+                },
+                status=403,
+            )
+
+        results = ResultService.get_election_results(
+            election_id
+        )
 
         return success_response(
             message="Election results retrieved successfully.",
             data=results,
         )
+
 
 
 class ElectionWinnersView(APIView):
@@ -84,13 +112,37 @@ class ElectionWinnersView(APIView):
 
     def get(self, request, election_id):
         """
-        Returns winners grouped by position.
+        Returns winners only after the election
+        has completed.
         """
 
-        winners = ResultService.get_position_winners(election_id)
+        try:
+            election = Election.objects.get(
+                id=election_id
+            )
+        except Election.DoesNotExist:
+            return Response(
+                {"detail": "Election not found."},
+                status=404,
+            )
+
+        if election.status != Election.Status.COMPLETED:
+            return Response(
+                {
+                    "detail": (
+                        "Election winners are only "
+                        "available after the election "
+                        "has completed."
+                    )
+                },
+                status=403,
+            )
+
+        winners = ResultService.get_position_winners(
+            election_id
+        )
 
         return Response(winners)
-
 
 class ElectionStatisticsView(APIView):
     """
