@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import electionService from "../services/electionService";
+import apiClient from "../api/axios";
 
 /**
  * Displays an election, its positions, and
@@ -15,8 +16,13 @@ function ElectionDetails() {
   const [positions, setPositions] = useState([]);
   const [candidates, setCandidates] = useState([]);
 
+  const [selectedCandidates, setSelectedCandidates] = useState({});
+  const [votedPositions, setVotedPositions] = useState({});
+
   const [loading, setLoading] = useState(true);
+  const [submittingPosition, setSubmittingPosition] = useState(null);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const loadElectionData = useCallback(async () => {
     const [
@@ -58,6 +64,7 @@ function ElectionDetails() {
     async function initialize() {
       try {
         setError("");
+
         await loadElectionData();
       } catch {
         if (!cancelled) {
@@ -77,6 +84,66 @@ function ElectionDetails() {
     };
   }, [loadElectionData]);
 
+  const handleCandidateChange = (
+    positionId,
+    candidateId,
+  ) => {
+    setSelectedCandidates((current) => ({
+      ...current,
+      [positionId]: candidateId,
+    }));
+  };
+
+  const handleVote = async (
+    position,
+    candidateId,
+  ) => {
+    setError("");
+    setSuccess("");
+
+    if (!candidateId) {
+      setError(
+        `Please select a candidate for ${position.title}.`,
+      );
+      return;
+    }
+
+    setSubmittingPosition(position.id);
+
+    try {
+      await apiClient.post("votes/", {
+        election: election.id,
+        position: position.id,
+        candidate: candidateId,
+      });
+
+      setVotedPositions((current) => ({
+        ...current,
+        [position.id]: true,
+      }));
+
+      setSuccess(
+        `Your vote for ${position.title} has been submitted successfully.`,
+      );
+    } catch (err) {
+      const responseData = err.response?.data;
+
+      if (responseData?.detail) {
+        setError(responseData.detail);
+      } else if (responseData?.vote) {
+        setError(responseData.vote);
+      } else if (responseData?.election) {
+        setError(responseData.election);
+      } else {
+        setError(
+          `Unable to submit your vote for ${position.title}.`,
+        );
+      }
+    } finally {
+      setSubmittingPosition(null);
+    }
+  };
+
   if (loading) {
     return (
       <main>
@@ -85,7 +152,7 @@ function ElectionDetails() {
     );
   }
 
-  if (error) {
+  if (error && !election) {
     return (
       <main>
         <p role="alert">{error}</p>
@@ -109,6 +176,9 @@ function ElectionDetails() {
     );
   }
 
+  const electionIsActive =
+    election.status === "ONGOING";
+
   return (
     <main>
       <Link to="/elections">
@@ -123,6 +193,30 @@ function ElectionDetails() {
         <strong>Status:</strong>{" "}
         {election.status}
       </p>
+
+      {election.status === "UPCOMING" && (
+        <p>
+          Voting has not started yet.
+        </p>
+      )}
+
+      {election.status === "COMPLETED" && (
+        <p>
+          Voting for this election has ended.
+        </p>
+      )}
+
+      {error && (
+        <p role="alert">
+          {error}
+        </p>
+      )}
+
+      {success && (
+        <p role="status">
+          {success}
+        </p>
+      )}
 
       <hr />
 
@@ -143,6 +237,12 @@ function ElectionDetails() {
                   String(position.id),
               );
 
+            const hasVoted =
+              votedPositions[position.id];
+
+            const selectedCandidate =
+              selectedCandidates[position.id];
+
             return (
               <section key={position.id}>
                 <h3>{position.title}</h3>
@@ -152,7 +252,9 @@ function ElectionDetails() {
                 )}
 
                 <p>
-                  <strong>Maximum votes:</strong>{" "}
+                  <strong>
+                    Maximum votes:
+                  </strong>{" "}
                   {position.max_votes}
                 </p>
 
@@ -170,17 +272,50 @@ function ElectionDetails() {
                         <article
                           key={candidate.id}
                         >
-                          {candidate.image && (
-                            <img
-                              src={candidate.image}
-                              alt={`${candidate.username} candidate`}
-                              width="120"
+                          <label>
+                            <input
+                              type="radio"
+                              name={`position-${position.id}`}
+                              value={candidate.id}
+                              checked={
+                                String(
+                                  selectedCandidate,
+                                ) ===
+                                String(
+                                  candidate.id,
+                                )
+                              }
+                              onChange={() =>
+                                handleCandidateChange(
+                                  position.id,
+                                  candidate.id,
+                                )
+                              }
+                              disabled={
+                                !electionIsActive ||
+                                hasVoted ||
+                                submittingPosition ===
+                                  position.id
+                              }
                             />
-                          )}
 
-                          <h5>
-                            {candidate.username}
-                          </h5>
+                            {" "}
+                            <strong>
+                              {candidate.username}
+                            </strong>
+                          </label>
+
+                          {candidate.image && (
+                            <div>
+                              <img
+                                src={
+                                  candidate.image
+                                }
+                                alt={`${candidate.username} candidate`}
+                                width="120"
+                              />
+                            </div>
+                          )}
 
                           <p>
                             <strong>
@@ -197,6 +332,38 @@ function ElectionDetails() {
                   </div>
                 )}
 
+                {electionIsActive &&
+                  positionCandidates.length > 0 && (
+                    <button
+                      type="button"
+                      disabled={
+                        hasVoted ||
+                        submittingPosition ===
+                          position.id
+                      }
+                      onClick={() =>
+                        handleVote(
+                          position,
+                          selectedCandidate,
+                        )
+                      }
+                    >
+                      {submittingPosition ===
+                      position.id
+                        ? "Submitting..."
+                        : hasVoted
+                          ? "Vote Submitted"
+                          : `Vote for ${position.title}`}
+                    </button>
+                  )}
+
+                {hasVoted && (
+                  <p role="status">
+                    ✓ You have already voted for
+                    this position.
+                  </p>
+                )}
+
                 <hr />
               </section>
             );
@@ -208,4 +375,3 @@ function ElectionDetails() {
 }
 
 export default ElectionDetails;
-

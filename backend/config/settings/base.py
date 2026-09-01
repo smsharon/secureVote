@@ -369,7 +369,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 LANGUAGE_CODE = "en-us"
 
 # UTC is recommended for backend consistency.
-TIME_ZONE = "UTC"
+TIME_ZONE = "Africa/Nairobi"
 
 USE_I18N = True
 
