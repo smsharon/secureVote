@@ -430,6 +430,23 @@ const loadElectionData = useCallback(async () => {
               </section>
             );
           })}
+
+          {election.status === "COMPLETED" && (
+            <>
+              <hr />
+
+              <h2>Election Results</h2>
+
+              <p>
+                Voting has ended. View the final election
+                results.
+              </p>
+
+              <Link to={`/elections/${election.id}/results`}>
+                View Election Results
+              </Link>
+            </>
+          )}
         </div>
       )}
     </main>

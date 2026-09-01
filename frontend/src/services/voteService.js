@@ -2,37 +2,48 @@
 import apiClient from "../api/axios";
 
 /**
- * Casts a vote for a candidate.
+ * Retrieves the authenticated voter's voting history.
  *
- * @param {Object} voteData - Election, position,
- * and candidate information.
- * @returns {Promise<Object>} Created vote.
+ * @returns {Promise<Object>} Vote history response.
  */
-const castVote = async (voteData) => {
-  const response = await apiClient.post(
-    "/votes/",
-    voteData,
+const getMyVotes = async () => {
+  const response = await apiClient.get("/votes/my-votes/");
+
+  return response.data;
+};
+
+/**
+ * Retrieves results for a completed election.
+ *
+ * @param {string|number} electionId - Election ID.
+ * @returns {Promise<Object>} Election results.
+ */
+const getElectionResults = async (electionId) => {
+  const response = await apiClient.get(
+    `/votes/results/${electionId}/`,
   );
 
   return response.data;
 };
 
 /**
- * Retrieves the authenticated voter's voting history.
+ * Retrieves winners for a completed election.
  *
- * @returns {Promise<Object>} Vote history response.
+ * @param {string|number} electionId - Election ID.
+ * @returns {Promise<Object>} Election winners.
  */
-const getMyVotes = async () => {
+const getElectionWinners = async (electionId) => {
   const response = await apiClient.get(
-    "/votes/my-votes/",
+    `/votes/winners/${electionId}/`,
   );
 
   return response.data;
 };
 
 const voteService = {
-  castVote,
   getMyVotes,
+  getElectionResults,
+  getElectionWinners,
 };
 
 export default voteService;

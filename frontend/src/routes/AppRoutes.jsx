@@ -22,6 +22,8 @@ import CandidacyApplication from "../pages/CandidacyApplication";
 import AdminCandidateApplications from "../pages/AdminCandidateApplications";
 import MyVotes from "../pages/MyVotes";
 import AdminVoters from "../pages/AdminVoters";
+import ElectionResults from "../pages/ElectionResults";
+
 function AppRoutes() {
 return ( <BrowserRouter> <Routes>
 {/* =========================
@@ -67,9 +69,15 @@ PUBLIC ROUTES
           />
 
           <Route
+            path="/elections/:id/results"
+            element={<ElectionResults />}
+          />
+
+          <Route
             path="/candidacy"
             element={<CandidacyApplication />}
           />
+
         </Route>
 
         {/* =========================
