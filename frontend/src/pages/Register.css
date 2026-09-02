@@ -1,0 +1,508 @@
+/* =========================================================
+   SecureVote Registration
+========================================================= */
+
+.register-page {
+  min-height: 100vh;
+}
+
+.register-shell {
+  position: relative;
+  z-index: 2;
+
+  display: grid;
+  grid-template-columns: 0.92fr 1.08fr;
+
+  width: min(1080px, 100%);
+
+  min-height: 650px;
+
+  border: 1px solid var(--line);
+
+  background: var(--surface);
+
+  box-shadow: var(--shadow);
+
+  animation: registerReveal 0.7s ease-out both;
+}
+
+/* ---------------------------------------------
+   Left Side
+--------------------------------------------- */
+
+.register-aside {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: space-between;
+
+  padding: 48px;
+
+  border-right: 1px solid var(--line);
+}
+
+.register-mark {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  color: var(--white);
+
+  font-family: var(--heading);
+  font-size: 1.4rem;
+  font-weight: 500;
+
+  letter-spacing: -0.035em;
+}
+
+.register-mark span {
+  width: 8px;
+  height: 8px;
+
+  border: 1px solid var(--accent);
+
+  transform: rotate(45deg);
+
+  transition:
+    transform 0.4s ease,
+    background 0.4s ease;
+}
+
+.register-shell:hover .register-mark span {
+  transform: rotate(135deg);
+}
+
+.register-introduction {
+  max-width: 390px;
+
+  margin: auto 0;
+}
+
+.register-introduction .auth-eyebrow {
+  margin-bottom: 20px;
+}
+
+.register-introduction h1 {
+  margin-bottom: 28px;
+
+  color: var(--white);
+
+  font-family: var(--heading);
+  font-size: clamp(3.1rem, 4.6vw, 4.8rem);
+  font-weight: 400;
+
+  line-height: 0.9;
+
+  letter-spacing: -0.055em;
+}
+
+.register-intro-text {
+  max-width: 340px;
+
+  color: var(--text-muted);
+
+  font-size: 0.94rem;
+  line-height: 1.7;
+}
+
+.register-aside-footer {
+  display: flex;
+  justify-content: space-between;
+
+  padding-top: 25px;
+
+  border-top: 1px solid var(--line);
+
+  color: var(--text-muted);
+
+  font-size: 0.6rem;
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
+}
+
+/* ---------------------------------------------
+   Right Side
+--------------------------------------------- */
+
+.register-panel {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+
+  padding: 58px 56px;
+
+  background: rgba(9, 10, 10, 0.42);
+}
+
+.register-panel-heading {
+  margin-bottom: 32px;
+}
+
+.register-panel-heading .auth-eyebrow {
+  margin-bottom: 13px;
+}
+
+.register-panel-heading h2 {
+  margin-bottom: 10px;
+
+  color: var(--white);
+
+  font-family: var(--heading);
+  font-size: 2.7rem;
+  font-weight: 400;
+
+  letter-spacing: -0.04em;
+}
+
+.register-panel-heading > p:last-child {
+  max-width: 440px;
+
+  color: var(--text-muted);
+
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+/* ---------------------------------------------
+   Form
+--------------------------------------------- */
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 24px;
+}
+
+.register-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 18px;
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-field label {
+  margin-bottom: 9px;
+
+  color: var(--text-heading);
+
+  font-size: 0.78rem;
+  font-weight: 600;
+
+  letter-spacing: 0.02em;
+}
+
+.auth-field input {
+  height: 48px;
+
+  border: 1px solid var(--line);
+  border-radius: 2px;
+
+  padding: 0 14px;
+
+  color: var(--white);
+
+  background: rgba(255, 255, 255, 0.018);
+
+  font-size: 0.86rem;
+
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.auth-field input::placeholder {
+  color: #555955;
+}
+
+.auth-field input:hover {
+  border-color: var(--line-light);
+}
+
+.auth-field input:focus {
+  border-color: var(--accent-line);
+
+  background: rgba(165, 141, 97, 0.025);
+
+  box-shadow: inset 2px 0 0 var(--accent);
+
+  outline: none;
+}
+
+/* ---------------------------------------------
+   Submit
+--------------------------------------------- */
+
+.register-submit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  height: 50px;
+
+  margin-top: 4px;
+
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+
+  padding: 0 17px;
+
+  color: var(--ink);
+
+  background: var(--accent);
+
+  font-size: 0.82rem;
+  font-weight: 700;
+
+  letter-spacing: 0.035em;
+
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.register-submit:hover:not(:disabled) {
+  border-color: #b7a477;
+
+  background: #b7a477;
+
+  transform: translateY(-1px);
+}
+
+.register-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.register-submit:disabled {
+  cursor: wait;
+
+  opacity: 0.7;
+}
+
+.register-arrow {
+  font-size: 1.15rem;
+  font-weight: 400;
+
+  transition: transform 0.25s ease;
+}
+
+.register-submit:hover .register-arrow {
+  transform: translateX(4px);
+}
+
+.register-loader {
+  width: 15px;
+  height: 15px;
+
+  border: 1px solid rgba(9, 10, 10, 0.3);
+  border-top-color: var(--ink);
+  border-radius: 50%;
+
+  animation: registerSpin 0.7s linear infinite;
+}
+
+/* ---------------------------------------------
+   Login Link
+--------------------------------------------- */
+
+.register-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin: 34px 0 17px;
+}
+
+.register-divider span {
+  height: 1px;
+
+  flex: 1;
+
+  background: var(--line);
+}
+
+.register-divider small {
+  color: var(--text-muted);
+
+  font-size: 0.58rem;
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
+
+  white-space: nowrap;
+}
+
+.login-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+
+  padding: 13px 0;
+
+  border-bottom: 1px solid var(--line);
+
+  color: var(--text-heading) !important;
+
+  font-size: 0.84rem;
+  font-weight: 600;
+
+  transition:
+    color 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.login-link:hover {
+  color: var(--accent) !important;
+
+  border-color: var(--accent-line);
+}
+
+.login-link span:last-child {
+  color: var(--text-muted);
+
+  font-size: 1rem;
+
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.login-link:hover span:last-child {
+  color: var(--accent);
+
+  transform: translate(2px, -2px);
+}
+
+.register-security-note {
+  max-width: 430px;
+
+  margin-top: 24px;
+
+  color: var(--text-muted);
+
+  font-size: 0.69rem;
+  line-height: 1.55;
+}
+
+/* ---------------------------------------------
+   Animation
+--------------------------------------------- */
+
+@keyframes registerReveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes registerSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------------------------------------------
+   Responsive
+--------------------------------------------- */
+
+@media (max-width: 850px) {
+  .register-shell {
+    grid-template-columns: 1fr;
+
+    min-height: auto;
+  }
+
+  .register-aside {
+    min-height: 310px;
+
+    padding: 34px;
+
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .register-introduction {
+    margin: 55px 0 20px;
+  }
+
+  .register-introduction h1 {
+    font-size: 3.3rem;
+  }
+
+  .register-panel {
+    padding: 44px 34px;
+  }
+}
+
+@media (max-width: 560px) {
+  .register-page {
+    align-items: flex-start;
+
+    padding: 12px;
+  }
+
+  .register-shell {
+    width: 100%;
+  }
+
+  .register-aside {
+    min-height: 260px;
+
+    padding: 26px;
+  }
+
+  .register-introduction {
+    margin-top: 45px;
+  }
+
+  .register-introduction h1 {
+    margin-bottom: 18px;
+
+    font-size: 2.85rem;
+  }
+
+  .register-intro-text {
+    font-size: 0.84rem;
+  }
+
+  .register-aside-footer {
+    display: none;
+  }
+
+  .register-panel {
+    padding: 36px 26px 40px;
+  }
+
+  .register-panel-heading h2 {
+    font-size: 2.3rem;
+  }
+
+  .register-form-row {
+    grid-template-columns: 1fr;
+
+    gap: 24px;
+  }
+
+  .atmosphere-mark {
+    display: none;
+  }
+}
