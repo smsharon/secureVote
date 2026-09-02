@@ -1,116 +1,230 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import electionService from "../services/electionService";
 
-/**
+import "./Elections.css";
 
-* Displays available SecureVote elections.
-  */
-  function Elections() {
+function Elections() {
   const [elections, setElections] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("ALL");
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
-useEffect(() => {
-let isMounted = true;
+  useEffect(() => {
+    let isMounted = true;
 
+    async function loadElections() {
+      try {
+        setIsLoading(true);
+        setError("");
 
-const loadElections = async () => {
-  try {
-    const data = await electionService.getElections();
+        const data = await electionService.getElections();
 
-    /**
-     * Django REST Framework may return either:
-     *
-     * 1. An array:
-     *    [...]
-     *
-     * 2. A paginated response:
-     *    { results: [...] }
-     */
-    const electionList = Array.isArray(data)
-      ? data
-      : data.results || [];
-
-    if (isMounted) {
-      setElections(electionList);
+        if (isMounted) {
+          setElections(Array.isArray(data) ? data : []);
+        }
+      } catch (requestError) {
+        if (isMounted) {
+          setError(
+            requestError.response?.data?.detail ||
+              "Unable to load elections."
+          );
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
     }
-  } catch {
-    if (isMounted) {
-      setError(
-        "Unable to load elections. Please try again.",
-      );
+
+    loadElections();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const filteredElections = useMemo(() => {
+    if (filter === "ALL") {
+      return elections;
     }
-  } finally {
-    if (isMounted) {
-      setLoading(false);
+
+    return elections.filter(
+      (election) => election.status === filter
+    );
+  }, [elections, filter]);
+
+  function formatDate(dateValue) {
+    if (!dateValue) {
+      return "Date unavailable";
     }
+
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }).format(new Date(dateValue));
   }
-};
 
-loadElections();
+  function getStatusLabel(status) {
+    const labels = {
+      UPCOMING: "Upcoming",
+      ONGOING: "Voting open",
+      COMPLETED: "Completed",
+    };
 
-return () => {
-  isMounted = false;
-};
+    return labels[status] || status;
+  }
 
+  function getActionLabel(status) {
+    if (status === "ONGOING") {
+      return "Vote now";
+    }
 
-}, []);
+    if (status === "COMPLETED") {
+      return "View results";
+    }
 
-if (loading) {
-return ( <section> <h1>Elections</h1> <p>Loading elections...</p> </section>
-);
-}
+    return "View election";
+  }
 
-if (error) {
-return ( <section> <h1>Elections</h1> <p role="alert">{error}</p> </section>
-);
-}
+  if (isLoading) {
+    return (
+      <section className="elections-loading">
+        <span />
+        <p>Loading elections</p>
+      </section>
+    );
+  }
 
-return ( <section> <h1>Elections</h1>
-
-
-  {elections.length === 0 ? (
-    <p>No elections are currently available.</p>
-  ) : (
-    <div>
-      {elections.map((election) => (
-        <article key={election.id}>
-          <h2>{election.title}</h2>
-
-          <p>{election.description}</p>
-
-          <p>
-            <strong>Status:</strong>{" "}
-            {election.status}
+  return (
+    <div className="elections-page">
+      <header className="elections-header">
+        <div>
+          <p className="elections-eyebrow">
+            ELECTION DIRECTORY
           </p>
 
-          <p>
-            <strong>Starts:</strong>{" "}
-            {new Date(
-              election.start_date,
-            ).toLocaleString()}
+          <h1>
+            Elections
+            <br />
+            <em>that matter.</em>
+          </h1>
+
+          <p className="elections-header-text">
+            Review current, upcoming, and completed elections.
+            Select an election to see its positions and candidates.
           </p>
+        </div>
+
+        <div className="elections-header-index">
+          <span>INDEX</span>
+          <strong>
+            {String(elections.length).padStart(2, "0")}
+          </strong>
+          <span>RECORDS</span>
+        </div>
+      </header>
+
+      {error && (
+        <div className="elections-error" role="alert">
+          <span>!</span>
+          {error}
+        </div>
+      )}
+
+      <div className="elections-toolbar">
+        <div className="election-filters">
+          {[
+            ["ALL", "All"],
+            ["ONGOING", "Open"],
+            ["UPCOMING", "Upcoming"],
+            ["COMPLETED", "Completed"],
+          ].map(([value, label]) => (
+            <button
+              className={
+                filter === value
+                  ? "election-filter active"
+                  : "election-filter"
+              }
+              key={value}
+              type="button"
+              onClick={() => setFilter(value)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <span className="elections-result-count">
+          {filteredElections.length}{" "}
+          {filteredElections.length === 1
+            ? "election"
+            : "elections"}
+        </span>
+      </div>
+
+      {filteredElections.length > 0 ? (
+        <section className="election-directory">
+          {filteredElections.map((election, index) => (
+            <article
+              className="election-directory-item"
+              key={election.id}
+            >
+              <div className="election-directory-number">
+                {String(index + 1).padStart(2, "0")}
+              </div>
+
+              <div className="election-directory-main">
+                <div className="election-directory-meta">
+                  <span
+                    className={`status election-status election-status-${election.status.toLowerCase()}`}
+                  >
+                    {getStatusLabel(election.status)}
+                  </span>
+
+                  <span>
+                    {formatDate(election.start_date)}
+                    {" — "}
+                    {formatDate(election.end_date)}
+                  </span>
+                </div>
+
+                <h2>{election.title}</h2>
+
+                <p>
+                  {election.description ||
+                    "Election information is available here."}
+                </p>
+              </div>
+
+              <Link
+                className="election-directory-action"
+                to={`/elections/${election.id}`}
+              >
+                <span>
+                  {getActionLabel(election.status)}
+                </span>
+
+                <span aria-hidden="true">→</span>
+              </Link>
+            </article>
+          ))}
+        </section>
+      ) : (
+        <section className="elections-empty">
+          <span>—</span>
+
+          <h2>No elections found</h2>
 
           <p>
-            <strong>Ends:</strong>{" "}
-            {new Date(
-              election.end_date,
-            ).toLocaleString()}
+            There are no elections matching the selected filter.
           </p>
-
-          <Link to={`/elections/${election.id}`}>
-            View Election
-          </Link>
-        </article>
-      ))}
+        </section>
+      )}
     </div>
-  )}
-</section>
-
-
-);
+  );
 }
 
 export default Elections;
