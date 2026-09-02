@@ -1,81 +1,130 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 
 import { useAuth } from "../hooks/useAuth";
 
-/**
- * Shared layout for authenticated SecureVote users.
- *
- * Provides:
- * - Application header
- * - Authenticated user information
- * - Main navigation
- * - Logout action
- * - Outlet for protected pages
- */
+import "./AppLayout.css";
+
 function AppLayout() {
   const { user, logout } = useAuth();
+  const location = useLocation();
 
-  /**
-   * Adds an active class to the currently selected navigation link.
-   */
   function getNavLinkClass({ isActive }) {
-    return isActive ? "nav-link active" : "nav-link";
+    return isActive ? "shell-nav-link active" : "shell-nav-link";
+  }
+
+  function getPageLabel() {
+    if (location.pathname.startsWith("/profile")) {
+      return "Profile";
+    }
+
+    if (location.pathname.startsWith("/my-votes")) {
+      return "My Votes";
+    }
+
+    if (location.pathname.startsWith("/elections")) {
+      return "Elections";
+    }
+
+    if (location.pathname.startsWith("/admin")) {
+      return "Administration";
+    }
+
+    return "Dashboard";
   }
 
   return (
     <div className="app-layout">
       <header className="app-header">
-        <div className="app-brand">
-          <NavLink to="/dashboard" aria-label="SecureVote dashboard">
-            SecureVote
-          </NavLink>
+        <div className="app-header-inner">
+          <div className="app-brand">
+            <NavLink to="/dashboard" aria-label="SecureVote dashboard">
+              <span className="brand-symbol" aria-hidden="true" />
+              <span>SecureVote</span>
+            </NavLink>
+          </div>
+
+          <div className="shell-page-indicator">
+            <span>SECUREVOTE</span>
+            <strong>/</strong>
+            <span>{getPageLabel()}</span>
+          </div>
+
+          <nav
+            className="app-nav"
+            aria-label="Main navigation"
+          >
+            <NavLink
+              to="/dashboard"
+              className={getNavLinkClass}
+              end
+            >
+              Dashboard
+            </NavLink>
+
+            <NavLink
+              to="/elections"
+              className={getNavLinkClass}
+            >
+              Elections
+            </NavLink>
+
+            <NavLink
+              to="/my-votes"
+              className={getNavLinkClass}
+            >
+              My Votes
+            </NavLink>
+
+            <NavLink
+              to="/profile"
+              className={getNavLinkClass}
+            >
+              Profile
+            </NavLink>
+          </nav>
+
+          <div className="app-user">
+            <div className="user-identity">
+              <span className="user-status" aria-hidden="true" />
+              <div>
+                <strong>{user?.username}</strong>
+                <small>
+                  {user?.role === "ADMIN" ? "Administrator" : "Voter"}
+                </small>
+              </div>
+            </div>
+
+            <button
+              className="shell-logout"
+              type="button"
+              onClick={logout}
+            >
+              <span>Sign out</span>
+              <span aria-hidden="true">↗</span>
+            </button>
+          </div>
         </div>
 
-        <nav aria-label="Main navigation">
-          <NavLink
-            to="/dashboard"
-            className={getNavLinkClass}
-          >
-            Dashboard
-          </NavLink>
-
-          <NavLink
-            to="/elections"
-            className={getNavLinkClass}
-          >
-            Elections
-          </NavLink>
-
-          <NavLink
-            to="/my-votes"
-            className={getNavLinkClass}
-          >
-            My Votes
-          </NavLink>
-
-          <NavLink
-            to="/profile"
-            className={getNavLinkClass}
-          >
-            Profile
-          </NavLink>
-        </nav>
-
-        <div className="app-user">
-          <span>{user?.username}</span>
-
-          <button
-            type="button"
-            onClick={logout}
-          >
-            Logout
-          </button>
+        <div className="mobile-shell-context">
+          <span>{getPageLabel()}</span>
+          <span>SECURE SESSION</span>
         </div>
       </header>
 
       <main className="app-content">
         <Outlet />
       </main>
+
+      <footer className="app-footer">
+        <div>
+          <span className="footer-symbol" aria-hidden="true" />
+          <span>SecureVote</span>
+        </div>
+
+        <span>PRIVATE VOTING PLATFORM</span>
+
+        <span>2026</span>
+      </footer>
     </div>
   );
 }
