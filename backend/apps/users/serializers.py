@@ -74,7 +74,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     """
-    Serializer for authenticated user details.
+    Serializer for authenticated user profile details.
     """
 
     class Meta:
@@ -88,6 +88,31 @@ class UserSerializer(serializers.ModelSerializer):
             "is_verified",
             "created_at",
         ]
+
+        read_only_fields = [
+            "id",
+            "role",
+            "is_verified",
+            "created_at",
+        ]
+
+    def validate_email(self, value):
+        """
+        Ensures the email remains unique when updating
+        the current user's profile.
+        """
+
+        queryset = User.objects.filter(email=value)
+
+        if self.instance:
+            queryset = queryset.exclude(pk=self.instance.pk)
+
+        if queryset.exists():
+            raise serializers.ValidationError(
+                "A user with this email already exists."
+            )
+
+        return value
 
 
 class LogoutSerializer(serializers.Serializer):

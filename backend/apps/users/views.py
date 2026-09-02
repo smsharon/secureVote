@@ -50,12 +50,13 @@ class UserRegistrationView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 
-class CurrentUserView(generics.RetrieveAPIView):
+class CurrentUserView(generics.RetrieveUpdateAPIView):
     """
     Returns details of the authenticated user.
     """
 
     serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         """
