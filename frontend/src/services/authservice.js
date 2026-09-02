@@ -49,11 +49,20 @@ const refreshToken = async (refreshToken) => {
   return response.data;
 };
 
+const logout = async (refreshToken) => {
+  const response = await apiClient.post("/users/logout/", {
+    refresh: refreshToken,
+  });
+
+  return response.data;
+};
+
 const authService = {
   register,
   login,
   getCurrentUser,
   refreshToken,
+  logout,
 };
 
 export default authService;

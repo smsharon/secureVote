@@ -13,6 +13,15 @@ function Profile() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [passwordData, setPasswordData] = useState({
+    old_password: "",
+    new_password: "",
+    new_password_confirm: "",
+    });
+
+    const [passwordSaving, setPasswordSaving] = useState(false);
+    const [passwordError, setPasswordError] = useState("");
+    const [passwordSuccess, setPasswordSuccess] = useState("");
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -51,6 +60,66 @@ function Profile() {
       ...current,
       [name]: value,
     }));
+  };
+
+  const handlePasswordChange = (event) => {
+    const { name, value } = event.target;
+
+    setPasswordData((current) => ({
+      ...current,
+      [name]: value,
+    }));
+  };
+
+  const handlePasswordSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      setPasswordSaving(true);
+      setPasswordError("");
+      setPasswordSuccess("");
+
+      await apiClient.post(
+        "/users/change-password/",
+        passwordData,
+      );
+
+      setPasswordData({
+        old_password: "",
+        new_password: "",
+        new_password_confirm: "",
+      });
+
+      setPasswordSuccess(
+        "Password changed successfully.",
+      );
+    } catch (err) {
+      const responseData = err.response?.data;
+
+      if (typeof responseData === "object") {
+        const messages = Object.entries(responseData)
+          .flatMap(([field, value]) => {
+            const errors = Array.isArray(value)
+              ? value
+              : [value];
+
+            return errors.map(
+              (message) => `${field}: ${message}`,
+            );
+          });
+
+        setPasswordError(
+          messages.join(" ") ||
+            "Unable to change password.",
+        );
+      } else {
+        setPasswordError(
+          "Unable to change password.",
+        );
+      }
+    } finally {
+      setPasswordSaving(false);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -198,6 +267,69 @@ function Profile() {
           {saving ? "Saving..." : "Save Changes"}
         </button>
       </form>
+      <hr />
+
+        <h2>Change Password</h2>
+
+        {passwordError && <p>{passwordError}</p>}
+
+        {passwordSuccess && <p>{passwordSuccess}</p>}
+
+        <form onSubmit={handlePasswordSubmit}>
+        <div>
+            <label htmlFor="old_password">
+            Current Password
+            </label>
+
+            <input
+            id="old_password"
+            name="old_password"
+            type="password"
+            value={passwordData.old_password}
+            onChange={handlePasswordChange}
+            required
+            />
+        </div>
+
+        <div>
+            <label htmlFor="new_password">
+            New Password
+            </label>
+
+            <input
+            id="new_password"
+            name="new_password"
+            type="password"
+            value={passwordData.new_password}
+            onChange={handlePasswordChange}
+            required
+            />
+        </div>
+
+        <div>
+            <label htmlFor="new_password_confirm">
+            Confirm New Password
+            </label>
+
+            <input
+            id="new_password_confirm"
+            name="new_password_confirm"
+            type="password"
+            value={passwordData.new_password_confirm}
+            onChange={handlePasswordChange}
+            required
+            />
+        </div>
+
+        <button
+            type="submit"
+            disabled={passwordSaving}
+        >
+            {passwordSaving
+            ? "Changing Password..."
+            : "Change Password"}
+        </button>
+        </form>
     </section>
   );
 }

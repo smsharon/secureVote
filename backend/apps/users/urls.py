@@ -4,6 +4,7 @@ from apps.users.views import (
     AdminDashboardView,
     AdminVoterListView,
     CandidateUserListView,
+    ChangePasswordView,
     CurrentUserView,
     LoginView,
     LogoutView,
@@ -54,7 +55,7 @@ urlpatterns = [
         VerifyVoterView.as_view(),
         name="verify-voter",
     ),
-    
+
     path(
         "verified-voter/",
         VerifiedVoterView.as_view(),
@@ -70,5 +71,11 @@ urlpatterns = [
         "candidate-users/",
         CandidateUserListView.as_view(),
         name="candidate-users",
+    ),
+
+    path(
+        "change-password/",
+        ChangePasswordView.as_view(),
+        name="change-password",
     ),
 ]

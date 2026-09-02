@@ -19,6 +19,7 @@ from apps.users.serializers import (
     UserRegistrationSerializer,
     UserSerializer,
     CandidateUserSerializer,
+    ChangePasswordSerializer,
 )
 
 User = get_user_model()
@@ -224,3 +225,24 @@ class VerifyVoterView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+
+class ChangePasswordView(APIView):
+    """
+    Allows an authenticated user to change their password.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(
+            data=request.data,
+            context={"request": request},
+        )
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {"detail": "Password changed successfully."},
+            status=status.HTTP_200_OK,
+        )        
